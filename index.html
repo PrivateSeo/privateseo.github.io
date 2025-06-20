@@ -512,26 +512,78 @@
         </div>
     </footer>
 
-	<div class="modal" id="consultation-modal">
-		<div class="modal__content">
-			<button class="modal__close" aria-label="Закрыть модальное окно">&times;</button>
-			<h3 class="modal__title">Получить консультацию</h3>
-			<form class="form" id="consultation-form" method="post">
-				<div class="form__group">
-					<input type="text" class="form__input" id="consultation-name" name="name" required placeholder=" ">
-					<label for="consultation-name" class="form__label">Ваше имя</label>
-				</div>
-				
-				<div class="form__group">
-					<input type="tel" class="form__input" id="consultation-phone" name="phone" required placeholder=" ">
-					<label for="consultation-phone" class="form__label">Телефон</label>
-				</div>
-				
-				<input type="hidden" name="form_type" value="consultation">
-				<button type="submit" class="button button--primary form__button">Получить консультацию</button>
-			</form>
-		</div>
-	</div>
+<div class="modal" id="consultation-modal">
+  <div class="modal__content">
+    <button class="modal__close" aria-label="Закрыть модальное окно">&times;</button>
+    <h3 class="modal__title">Получить консультацию</h3>
+    <form 
+      class="form" 
+      id="consultation-form" 
+      action="https://formsubmit.co/progreSSite@ya.ru" 
+      method="POST"
+    >
+      <!-- Скрытые поля Formsubmit -->
+      <input type="hidden" name="_subject" value="Запрос на консультацию">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://вашсайт.ru/thanks.html">
+      <input type="hidden" name="form_type" value="consultation">
+      
+      <!-- Поля формы -->
+      <div class="form__group">
+        <input type="text" class="form__input" id="consultation-name" name="name" required placeholder=" ">
+        <label for="consultation-name" class="form__label">Ваше имя</label>
+      </div>
+      
+      <div class="form__group">
+        <input type="tel" class="form__input" id="consultation-phone" name="phone" required placeholder=" ">
+        <label for="consultation-phone" class="form__label">Телефон</label>
+      </div>
+      
+      <button type="submit" class="button button--primary form__button">Получить консультацию</button>
+    </form>
+  </div>
+</div>
+
+<!-- Добавьте этот JavaScript -->
+<script>
+document.getElementById('consultation-form').addEventListener('submit', function(e) {
+  // Можно добавить обработку перед отправкой
+  const submitButton = this.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправка...';
+  
+  // Форма отправится автоматически через Formsubmit
+});
+
+document.getElementById('consultation-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const formData = new FormData(this);
+  const submitButton = this.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправка...';
+  
+  try {
+    await fetch(this.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    alert('Спасибо! Мы скоро свяжемся с вами.');
+    this.reset();
+    document.getElementById('consultation-modal').classList.remove('active');
+    
+  } catch (error) {
+    alert('Ошибка отправки. Позвоните нам!');
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = 'Получить консультацию';
+  }
+});
+</script>
 
 	<div class="modal" id="callback-modal">
 		<div class="modal__content">
