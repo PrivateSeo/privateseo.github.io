@@ -61,3 +61,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('callback-form');
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    const originalText = button.textContent;
+    button.textContent = 'Отправка...';
+    
+    const formData = {
+      name: form.name.value,
+      phone: form.phone.value,
+      form_type: form.form_type.value
+    };
+    
+    try {
+      const success = await sendToTelegram(formData);
+      
+      if (success) {
+        alert('✅ Спасибо! Мы скоро свяжемся с вами.');
+        form.reset();
+        document.getElementById('consultation-modal').classList.remove('active');
+      } else {
+        throw new Error('Не удалось отправить заявку');
+      }
+    } catch (error) {
+      console.error('Form Error:', error);
+      alert('⚠️ Ошибка отправки. Позвоните нам напрямую!');
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  });
+});
