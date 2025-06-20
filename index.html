@@ -563,58 +563,5 @@
     <script src="js/slider.js"></script>
     <script src="js/modal.js"></script>
     <script src="js/form.js"></script>
-	<script>
-	document.addEventListener('DOMContentLoaded', function() {
-		// Обработчик для формы консультации
-		document.getElementById('consultation-form').addEventListener('submit', function(e) {
-			e.preventDefault();
-			submitForm(this);
-		});
-
-		// Обработчик для формы обратного звонка
-		document.getElementById('callback-form').addEventListener('submit', function(e) {
-			e.preventDefault();
-			submitForm(this);
-		});
-
-		function submitForm(form) {
-			const formData = new FormData(form);
-			const button = form.querySelector('button[type="submit"]');
-			const originalText = button.textContent;
-
-			// Показываем загрузку
-			button.disabled = true;
-			button.textContent = 'Отправка...';
-
-			fetch('mail.php', {
-				method: 'POST',
-				body: formData
-			})
-			.then(response => response.json())
-			.then(data => {
-				if (data.success) {
-					// Показываем успешное сообщение
-					alert(data.message);
-					// Закрываем модальное окно
-					const modal = form.closest('.modal');
-					if (modal) modal.classList.remove('active');
-					document.body.classList.remove('no-scroll');
-					// Очищаем форму
-					form.reset();
-				} else {
-					alert(data.message);
-				}
-			})
-			.catch(error => {
-				alert('Произошла ошибка. Попробуйте позже.');
-				console.error('Error:', error);
-			})
-			.finally(() => {
-				button.disabled = false;
-				button.textContent = originalText;
-			});
-		}
-	});
-	</script>
 </body>
 </html>
