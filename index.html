@@ -561,40 +561,47 @@
     <script src="js/form.js"></script>
 	
 	<script>
-async function submitForm(form) {
+document.getElementById('consultation-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
   const formData = {
-    name: form.name.value,
-    phone: form.phone.value,
-    form_type: form.form_type.value
+    name: this.name.value,
+    phone: this.phone.value,
+    form_type: this.form_type.value
   };
-
-  const button = form.querySelector('button[type="submit"]');
+  
+  const button = this.querySelector('button[type="submit"]');
   button.disabled = true;
   const originalText = button.textContent;
   button.textContent = 'Отправка...';
-
+  
   try {
-    // Добавляем режим 'no-cors' для обхода CORS в демо-версии
     const response = await fetch('https://script.google.com/macros/s/AKfycbz8laZrpCPvkduLmgw8PDIWEAdzQLX5_rBDxFTQknApLCrRBm0BNY2vac90Qe-pdbE/exec', {
       method: 'POST',
-      mode: 'no-cors', // Только для тестирования!
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(formData)
     });
-
-    // В режиме 'no-cors' мы не получим ответ, поэтому считаем успешным
-    alert('Спасибо! Мы скоро свяжемся с вами.');
-    form.reset();
     
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('Спасибо! Мы скоро свяжемся с вами.');
+      this.reset();
+      const modal = this.closest('.modal');
+      if (modal) modal.classList.remove('active');
+    } else {
+      throw new Error(result.message || 'Ошибка сервера');
+    }
   } catch (error) {
     alert('Ошибка отправки: ' + error.message);
+    console.error('Ошибка:', error);
   } finally {
     button.disabled = false;
     button.textContent = originalText;
   }
-}
+});
 
 	/*document.getElementById('consultation-form').addEventListener('submit', async function(e) {
 	  e.preventDefault();
