@@ -516,19 +516,20 @@
 		<div class="modal__content">
 			<button class="modal__close" aria-label="Закрыть модальное окно">&times;</button>
 			<h3 class="modal__title">Получить консультацию</h3>
-			<form class="form" id="consultation-form" method="post">
-				<div class="form__group">
-					<input type="text" class="form__input" id="consultation-name" name="name" required placeholder=" ">
-					<label for="consultation-name" class="form__label">Ваше имя</label>
-				</div>
-				
-				<div class="form__group">
-					<input type="tel" class="form__input" id="consultation-phone" name="phone" required placeholder=" ">
-					<label for="consultation-phone" class="form__label">Телефон</label>
-				</div>
-				
-				<input type="hidden" name="form_type" value="consultation">
-				<button type="submit" class="button button--primary form__button">Получить консультацию</button>
+			<form class="form" id="consultation-form">
+			  <input type="hidden" name="form_type" value="Консультация">
+			  
+			  <div class="form__group">
+				<input type="text" class="form__input" name="name" required placeholder=" ">
+				<label class="form__label">Ваше имя</label>
+			  </div>
+			  
+			  <div class="form__group">
+				<input type="tel" class="form__input" name="phone" required placeholder=" ">
+				<label class="form__label">Телефон</label>
+			  </div>
+			  
+			  <button type="submit" class="button button--primary">Получить консультацию</button>
 			</form>
 		</div>
 	</div>
@@ -558,5 +559,42 @@
     <script src="js/slider.js"></script>
     <script src="js/modal.js"></script>
     <script src="js/form.js"></script>
+	<script>
+	document.getElementById('consultation-form').addEventListener('submit', async function(e) {
+	  e.preventDefault();
+	  
+	  const formData = new URLSearchParams();
+	  formData.append('name', this.name.value);
+	  formData.append('phone', this.phone.value);
+	  formData.append('form_type', this.form_type.value);
+	  
+	  const button = this.querySelector('button[type="submit"]');
+	  button.disabled = true;
+	  const originalText = button.textContent;
+	  button.textContent = 'Отправка...';
+	  
+	  try {
+		const response = await fetch('https://script.google.com/macros/s/AKfycbz8laZrpCPvkduLmgw8PDIWEAdzQLX5_rBDxFTQknApLCrRBm0BNY2vac90Qe-pdbE/exec', {
+		  method: 'POST',
+		  body: formData
+		});
+		
+		if (response.ok) {
+		  alert('Спасибо! Мы скоро свяжемся с вами.');
+		  this.reset();
+		  // Закрываем модальное окно, если нужно
+		  const modal = this.closest('.modal');
+		  if (modal) modal.classList.remove('active');
+		} else {
+		  throw new Error('Ошибка сервера');
+		}
+	  } catch (error) {
+		alert('Ошибка отправки: ' + error.message);
+	  } finally {
+		button.disabled = false;
+		button.textContent = originalText;
+	  }
+	});	
+	</script>
 </body>
 </html>
