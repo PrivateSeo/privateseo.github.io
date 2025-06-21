@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="css/main.css">
 	<!-- Favicon -->
 	<link rel="icon" href="favicon.svg" type="image/x-icon">
+	<link rel="preload" href="images/hero-image.webp" as="image" imagesrcset="images/hero-image-small.webp 480w, images/hero-image-medium.webp 768w, images/hero-image.webp 1200w" imagesizes="(max-width: 480px) 480px, (max-width: 768px) 768px, 1200px">
 </head>
 <body class="page">
 	<!-- Шапка сайта (Header) -->
@@ -90,7 +91,18 @@
 				</div>
 			</div>
 			<div class="hero__image">
-				<img src="images/hero-image.webp" alt="Веб-разработчик за работой" class="hero__img" itemprop="image">
+				<img 
+					src="images/hero-image.webp" 
+					srcset="images/hero-image-small.webp 480w, images/hero-image-medium.webp 768w, images/hero-image.webp 1200w"
+					sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, 1200px"
+					alt="Веб-разработчик за работой" 
+					class="hero__img" 
+					itemprop="image"
+					width="1200" 
+					height="630"
+					loading="eager"
+					decoding="async"
+				>
 			</div>
 		</div>
 	</section>
