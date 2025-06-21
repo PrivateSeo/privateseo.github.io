@@ -298,6 +298,15 @@ ul {
   line-height: 1.2;
 }
 
+.hero__title span {
+	font-size: 18px;
+	font-weight: 500;
+	position: relative;
+	display: block;
+	line-height: 1;
+}
+
+
 .hero__subtitle {
   font-size: 2rem;
   color: var(--gray-dark);
