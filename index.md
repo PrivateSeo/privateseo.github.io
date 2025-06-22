@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="ru" itemscope itemtype="http://schema.org/WebPage">
 {% include head.html %}
 <body class="page">
 	<!-- Шапка сайта (Header) -->
