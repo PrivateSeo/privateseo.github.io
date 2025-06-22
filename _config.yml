@@ -1,0 +1,18 @@
+title: "Частный SEO специалист и Web-разработчик"
+description: "Опытный частный веб разработчик и SEO специалист. Создаю и поддерживаю сайты на 1С-Битрикс, Wordpress, MODX и др."
+url: "https://privseo.ru"
+author: "Данильченко Роберт"
+email: "progreSSite@ya.ru"
+phone: "+7 (991) 504-81-50"
+yandex_metrika: "102896834"
+
+socials:
+  - name: "Telegram"
+    url: "https://t.me/robDaNilov"
+    icon: "telegram.webp"
+  - name: "WhatsApp"
+    url: "https://wa.me/79607918623"
+    icon: "whatsapp.webp"
+  - name: "Microsoft Teams"
+    url: "https://teams.microsoft.com/l/chat/0/0?users=DanilovRob@ya.ru"
+    icon: "microsoft.webp"

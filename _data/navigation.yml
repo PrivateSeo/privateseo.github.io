@@ -1,0 +1,17 @@
+- title: "Главная"
+  url: "#hero"
+  
+- title: "Обо мне"
+  url: "#about"
+  
+- title: "Услуги"
+  url: "#services"
+  
+- title: "Портфолио"
+  url: "#portfolio"
+  
+- title: "Отзывы"
+  url: "#reviews"
+  
+- title: "Контакты"
+  url: "#contact"
