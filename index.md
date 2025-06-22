@@ -1,3 +1,8 @@
+---
+layout: default
+title: Частный SEO специалист и Web-разработчик
+description: Создание, поддержка и продвижение сайтов
+---
 	<!-- Шапка сайта (Header) -->
 	<header class="header" itemscope itemtype="http://schema.org/WPHeader">
 		<div class="container header__container">
