@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  {% include head.html %}
+</head>
+<body class="page">
+  {{ content }}
+  
+  <!-- Подключение скриптов -->
+  <script src="{{ '/js/main.js' | relative_url }}"></script>
+  <script src="{{ '/js/slider.js' | relative_url }}"></script>
+  <script src="{{ '/js/modal.js' | relative_url }}"></script>
+  <script src="{{ '/js/form.js' | relative_url }}"></script>
+  <script src="{{ '/js/send-telegram.js' | relative_url }}" defer></script>
+</body>
+</html>
