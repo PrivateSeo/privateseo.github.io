@@ -17,7 +17,9 @@ socials:
 collections:
   news:
     output: true
-    permalink: /news/:title/
+    permalink: /news/:path/
+    title: Новости
+    description: Последние новости о SEO и веб-разработке
 
 defaults:
   - scope:
@@ -25,6 +27,7 @@ defaults:
       type: "news"
     values:
       layout: "post"
+      category: "news"
 
 plugins:
   - jekyll-paginate-v2
