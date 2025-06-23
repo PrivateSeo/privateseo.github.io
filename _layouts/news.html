@@ -1,0 +1,28 @@
+---
+layout: default
+---
+
+<article class="news-article">
+  <header class="article-header">
+    <div class="container">
+      <div class="article-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%d.%m.%Y" }}</time>
+        <span class="article-category">
+          <a href="/category/{{ page.category }}/">{{ site.data.categories[page.category] }}</a>
+        </span>
+      </div>
+      
+      <h1 class="article-title">{{ page.name }}</h1>
+      
+      {% if page.image %}
+        <div class="article-image">
+          <img src="{{ page.image }}" alt="{{ page.name }}" loading="lazy">
+        </div>
+      {% endif %}
+    </div>
+  </header>
+  
+  <div class="article-content container">
+    {{ content }}
+  </div>
+</article>
