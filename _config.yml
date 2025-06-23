@@ -19,8 +19,6 @@ plugins:
 
 pagination:
   enabled: true
-  collection: posts
-  where_exp: "item.path contains '_posts/news'"
   per_page: 5
   permalink: '/news/page/:num/'
   sort_field: 'date'
