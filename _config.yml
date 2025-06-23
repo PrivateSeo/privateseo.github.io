@@ -14,18 +14,6 @@ socials:
     url: "https://teams.microsoft.com/l/chat/0/0?users=DanilovRob@ya.ru"
     icon: "microsoft.webp"
 
-collections:
-  news:
-    output: true
-    permalink: /news/:title/
-
-defaults:
-  - scope:
-      path: "_news"
-      type: "news"
-    values:
-      layout: "post"
-
 plugins:
   - jekyll-paginate-v2
 
