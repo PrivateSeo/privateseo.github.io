@@ -18,3 +18,11 @@ collections:
   categories:
     output: true
     permalink: /category/:path/
+
+# Настройки пагинации
+paginate: 1
+paginate_path: "/news/page:num/"
+collections:
+  news:
+    output: true
+    permalink: /news/:title/

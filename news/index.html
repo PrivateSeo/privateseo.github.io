@@ -2,6 +2,12 @@
 layout: default
 title: Новости
 permalink: /news/
+pagination:
+  enabled: true
+  collection: posts
+  per_page: 1
+  sort_field: date
+  sort_reverse: true
 ---
 
 <section class="news-list">
@@ -9,33 +15,40 @@ permalink: /news/
     <h1 class="page-title">Новости</h1>
     
     <div class="news-grid">
-      {% assign news_posts = site.posts | where: "layout", "news" | reverse %}
-      {% for post in news_posts %}
-        <article class="news-card">
-          <a href="{{ post.url }}" class="news-card__link">
-            {% if post.image %}
-              <div class="news-card__image">
-                <img src="{{ post.image }}" alt="{{ post.name }}" loading="lazy">
-              </div>
-            {% endif %}
-            
-            <div class="news-card__content">
-              <div class="news-card__meta">
-                <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%d.%m.%Y" }}</time>
-                <span class="news-card__category">
-                  <a href="/category/{{ post.category }}/">{{ site.data.categories[post.category] }}</a>
-                </span>
-              </div>
-              
-              <h2 class="news-card__title">{{ post.name }}</h2>
-              
-              <div class="news-card__excerpt">
-                {{ post.description | truncate: 160 }}
-              </div>
-            </div>
-          </a>
-        </article>
+      {% for post in paginator.posts %}
+        {% if post.layout == 'news' %}
+          <article class="news-card">
+            <!-- Ваш существующий код карточки новости -->
+          </article>
+        {% endif %}
       {% endfor %}
     </div>
+
+    <!-- Пагинация -->
+    {% if paginator.total_pages > 1 %}
+    <div class="pagination">
+      {% if paginator.previous_page %}
+        <a href="{{ paginator.previous_page_path }}" class="pagination__prev">
+          ← Назад
+        </a>
+      {% endif %}
+      
+      {% for page in (1..paginator.total_pages) %}
+        {% if page == paginator.page %}
+          <span class="pagination__current">{{ page }}</span>
+        {% elsif page == 1 %}
+          <a href="/news/" class="pagination__page">{{ page }}</a>
+        {% else %}
+          <a href="/news/page{{ page }}/" class="pagination__page">{{ page }}</a>
+        {% endif %}
+      {% endfor %}
+      
+      {% if paginator.next_page %}
+        <a href="{{ paginator.next_page_path }}" class="pagination__next">
+          Вперед →
+        </a>
+      {% endif %}
+    </div>
+    {% endif %}
   </div>
 </section>
