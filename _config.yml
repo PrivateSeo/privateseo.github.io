@@ -18,3 +18,9 @@ collections:
   categories:
     output: true
     permalink: /category/:path/
+
+plugins:
+  - jekyll-paginate
+
+paginate: 1
+paginate_path: "/news/page:num/"
