@@ -28,12 +28,14 @@ pagination:
     after: 2
 
 collections:
-  news:
+  posts:
     output: true
-    permalink: /news/:path/
+    permalink: /:categories/:year/:month/:day/:title.html
 
-pagination:
-  enabled: true
-  collection: news  # Указываем нашу коллекцию
-  per_page: 5
-  permalink: '/news/page/:num/'
+defaults:
+  - scope:
+      path: "_posts/news"
+      type: "posts"
+    values:
+      layout: "post"
+      category: "news"
