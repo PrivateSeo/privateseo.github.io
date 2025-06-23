@@ -19,4 +19,4 @@ collections:
     output: true
     permalink: /category/:path/
 
-paginate: 2
+paginate: 5
