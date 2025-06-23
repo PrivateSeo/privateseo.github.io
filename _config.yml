@@ -18,3 +18,5 @@ collections:
   categories:
     output: true
     permalink: /category/:path/
+
+paginate: 5
