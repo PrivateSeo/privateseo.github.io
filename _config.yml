@@ -20,7 +20,7 @@ collections:
     permalink: /category/:path/
 
 # Настройки пагинации
-paginate: 2
+paginate: 1
 paginate_path: "/news/page:num/"
 collections:
   news:
