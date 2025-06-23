@@ -9,7 +9,7 @@ permalink: /news/
     <h1 class="page-title">Новости</h1>
     
     <div class="news-grid">
-      {% assign news_posts = site.posts | where_exp: "post", "post.layout == 'news'" | sort: "date" | reverse %}
+      {% assign news_posts = site.posts | where: "category", page.category | sort: "date" | reverse %}
       {% for post in news_posts %}
         <article class="news-card">
           <a href="{{ post.url }}" class="news-card__link">
@@ -30,7 +30,7 @@ permalink: /news/
               <h2 class="news-card__title">{{ post.name }}</h2>
               
               <div class="news-card__excerpt">
-                {{ post.description | truncate: 160 }}
+                {{ post.excerpt | default: post.description | truncate: 160 }}
               </div>
             </div>
           </a>
