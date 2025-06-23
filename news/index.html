@@ -8,7 +8,7 @@ pagination:
   per_page: 3
   sort_field: date
   sort_reverse: true
-  where: "layout = 'news'"
+  where_exp: "item", "item.layout == 'news'"
 ---
 
 <section class="news-list">
@@ -60,7 +60,7 @@ pagination:
           {% elsif page == 1 %}
             <a href="{{ '/news/' | relative_url }}" class="pagination__page">{{ page }}</a>
           {% else %}
-            <a href="{{ site.paginate_path | relative_url | replace: ':num', page }}" class="pagination__page">{{ page }}</a>
+            <a href="{{ site.paginate_path | replace: ':num', page | relative_url }}" class="pagination__page">{{ page }}</a>
           {% endif %}
         {% endfor %}
       </div>
