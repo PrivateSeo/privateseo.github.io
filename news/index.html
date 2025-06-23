@@ -10,8 +10,7 @@ permalink: /news/
     
     <div class="news-grid">
       {% assign news_posts = site.posts | where: "layout", "news" | reverse %}
-      {% assign paginated_posts = news_posts | slice: paginator.per_page %}
-      {% for post in paginated_posts %}
+      {% for post in news_posts %}
         <article class="news-card">
           <a href="{{ post.url }}" class="news-card__link">
             {% if post.image %}
@@ -37,18 +36,6 @@ permalink: /news/
           </a>
         </article>
       {% endfor %}
-    </div>
-
-    <div class="pagination">
-      {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path }}" class="pagination__link">« Предыдущая</a>
-      {% endif %}
-      
-      <span class="pagination__info">Страница {{ paginator.page }} из {{ paginator.total_pages }}</span>
-      
-      {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path }}" class="pagination__link">Следующая »</a>
-      {% endif %}
     </div>
   </div>
 </section>
