@@ -2,21 +2,18 @@
 layout: default
 title: Новости
 permalink: /news/
-pagination:
-  enabled: true
-  collection: posts
-  per_page: 3
-  sort_field: date
-  sort_reverse: true
-  where_exp: "item", "item.layout == 'news'"
 ---
 
 <section class="news-list">
   <div class="container">
     <h1 class="page-title">Новости</h1>
     
+    <!-- Временная проверка количества постов -->
+    {% assign all_news = site.posts | where: "layout", "news" %}
+    <p>Всего новостей найдено: {{ all_news.size }}</p>
+    
     <div class="news-grid">
-      {% for post in paginator.posts %}
+      {% for post in all_news limit: 3 %}
         <article class="news-card">
           <a href="{{ post.url }}" class="news-card__link">
             {% if post.image %}
@@ -44,33 +41,14 @@ pagination:
       {% endfor %}
     </div>
 
-    <!-- Пагинация -->
-    {% if paginator.total_pages > 1 %}
+    <!-- Простая пагинация без плагина -->
+    {% assign posts_per_page = 3 %}
+    {% assign total_posts = all_news.size %}
+    {% assign total_pages = total_posts | divided_by: posts_per_page | plus: 1 %}
+    
+    {% if total_posts > posts_per_page %}
     <div class="pagination">
-      {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination__prev">← Назад</a>
-      {% else %}
-        <span class="pagination__prev disabled">← Назад</span>
-      {% endif %}
-
       <div class="pagination__pages">
-        {% for page in (1..paginator.total_pages) %}
-          {% if page == paginator.page %}
-            <span class="pagination__page active">{{ page }}</span>
-          {% elsif page == 1 %}
-            <a href="{{ '/news/' | relative_url }}" class="pagination__page">{{ page }}</a>
-          {% else %}
-            <a href="{{ site.paginate_path | replace: ':num', page | relative_url }}" class="pagination__page">{{ page }}</a>
-          {% endif %}
-        {% endfor %}
-      </div>
-
-      {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path | relative_url }}" class="pagination__next">Вперед →</a>
-      {% else %}
-        <span class="pagination__next disabled">Вперед →</span>
-      {% endif %}
-    </div>
-    {% endif %}
-  </div>
-</section>
+        {% for page in (1..total_pages) %}
+          {% if page == 1 %}
+            <a href="/news/" class="pagination__page {% if forloop.first %}active{% endif
