@@ -15,7 +15,7 @@ socials:
     icon: "microsoft.webp"
 
 plugins:
-  - jekyll-paginate
+  - jekyll-paginate-v2
 
 pagination:
   enabled: true
