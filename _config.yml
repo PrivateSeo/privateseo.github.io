@@ -13,3 +13,8 @@ socials:
   - name: "Microsoft Teams"
     url: "https://teams.microsoft.com/l/chat/0/0?users=DanilovRob@ya.ru"
     icon: "microsoft.webp"
+
+collections:
+  categories:
+    output: true
+    permalink: /category/:path/
