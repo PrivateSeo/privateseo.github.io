@@ -2,17 +2,6 @@
 layout: default
 title: Новости
 permalink: /news/
-pagination:
-  enabled: true
-  collection: posts
-  per_page: 6
-  permalink: '/news/page:num/'
-  sort_field: date
-  sort_reverse: true
-  where_exp: "item", "item.layout == 'news'"
-  trail:
-    before: 2
-    after: 2
 ---
 
 <section class="news-list">
@@ -20,7 +9,8 @@ pagination:
     <h1 class="page-title">Новости</h1>
     
     <div class="news-grid">
-      {% for post in paginator.posts %}
+      {% assign news_posts = site.posts | where: "layout", "news" | reverse %}
+      {% for post in news_posts %}
         <article class="news-card">
           <a href="{{ post.url }}" class="news-card__link">
             {% if post.image %}
@@ -47,32 +37,5 @@ pagination:
         </article>
       {% endfor %}
     </div>
-
-    <!-- Пагинация -->
-    {% if paginator.total_pages > 1 %}
-    <div class="pagination">
-      {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination__prev">&laquo; Назад</a>
-      {% else %}
-        <span class="pagination__prev disabled">&laquo; Назад</span>
-      {% endif %}
-
-      {% for page in (1..paginator.total_pages) %}
-        {% if page == paginator.page %}
-          <span class="pagination__current">{{ page }}</span>
-        {% elsif page == 1 %}
-          <a href="{{ '/news/' | relative_url }}" class="pagination__page">{{ page }}</a>
-        {% else %}
-          <a href="{{ '/news/page' | relative_url | append: page }}" class="pagination__page">{{ page }}</a>
-        {% endif %}
-      {% endfor %}
-
-      {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path | relative_url }}" class="pagination__next">Вперед &raquo;</a>
-      {% else %}
-        <span class="pagination__next disabled">Вперед &raquo;</span>
-      {% endif %}
-    </div>
-    {% endif %}
   </div>
 </section>
