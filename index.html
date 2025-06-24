@@ -350,9 +350,11 @@ description: Создание, поддержка и продвижение са
 		  {% assign latest_news = site.posts | where: "layout", "news" | sort: "date" | reverse | limit: 3 %}
 		  {% for post in latest_news %}
 		  <article class="news-item" itemscope itemtype="http://schema.org/Article">
-			<div class="news-item__icon">
-				<img src="{{ post.image }}" alt="{{ post.name }}" loading="lazy">
+			{% if post.image %}
+			<div class="news-item__image">
+			  <img src="{{ post.image }}" alt="{{ post.name }}" loading="lazy" class="news-item__img" itemprop="image">
 			</div>
+			{% endif %}
 			<div class="news-item__content">
 			  <time class="news-item__date" datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">
 				{{ post.date | date: "%d.%m.%Y" }}
@@ -376,7 +378,6 @@ description: Создание, поддержка и продвижение са
 		</div>
 	  </div>
 	</section>
-
 	<!-- Форма обратной связи -->
 	<section class="contact" id="contact">
 		<div class="container contact__container">
