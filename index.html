@@ -347,29 +347,30 @@ description: Создание, поддержка и продвижение са
 		<p class="section-subtitle news__subtitle">Актуальные статьи и обновления в сфере SEO и веб-разработки</p>
 		
 		<div class="news__list">
-		  {% assign latest_news = site.posts | where: "layout", "news" | sort: "date" | reverse | limit: 3 %}
-		  {% for post in latest_news %}
-		  <article class="news-item" itemscope itemtype="http://schema.org/Article">
-			{% if post.image %}
-			<div class="news-item__image">
-			  <img src="{{ post.image }}" alt="{{ post.name }}" loading="lazy" class="news-item__img" itemprop="image">
-			</div>
+		  {% for post in site.posts limit:3 %}
+			{% if post.layout == "news" %}
+			<article class="news-item" itemscope itemtype="http://schema.org/Article">
+			  {% if post.image %}
+			  <div class="news-item__image">
+				<img src="{{ post.image }}" alt="{{ post.name }}" loading="lazy" class="news-item__img" itemprop="image">
+			  </div>
+			  {% endif %}
+			  <div class="news-item__content">
+				<time class="news-item__date" datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">
+				  {{ post.date | date: "%d.%m.%Y" }}
+				</time>
+				<h3 class="news-item__title" itemprop="headline">
+				  <a href="{{ post.url }}" itemprop="url">{{ post.name }}</a>
+				</h3>
+				<div class="news-item__excerpt" itemprop="description">
+				  {{ post.description | truncate: 120 }}
+				</div>
+				<div class="news-item__category">
+				  <a href="/category/{{ post.category }}/">{{ site.data.categories[post.category] }}</a>
+				</div>
+			  </div>
+			</article>
 			{% endif %}
-			<div class="news-item__content">
-			  <time class="news-item__date" datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">
-				{{ post.date | date: "%d.%m.%Y" }}
-			  </time>
-			  <h3 class="news-item__title" itemprop="headline">
-				<a href="{{ post.url }}" itemprop="url">{{ post.name }}</a>
-			  </h3>
-			  <div class="news-item__excerpt" itemprop="description">
-				{{ post.description | truncate: 120 }}
-			  </div>
-			  <div class="news-item__category">
-				<a href="/category/{{ post.category }}/">{{ site.data.categories[post.category] }}</a>
-			  </div>
-			</div>
-		  </article>
 		  {% endfor %}
 		</div>
 		
@@ -378,6 +379,7 @@ description: Создание, поддержка и продвижение са
 		</div>
 	  </div>
 	</section>
+
 	<!-- Форма обратной связи -->
 	<section class="contact" id="contact">
 		<div class="container contact__container">
