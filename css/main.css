@@ -1355,6 +1355,7 @@ ul {
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--box-shadow);
+  display: inline-block;
 }
 
 .article-image img {
