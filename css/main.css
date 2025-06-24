@@ -1351,7 +1351,7 @@ ul {
 }
 
 .article-image {
-  margin-bottom: 4rem;
+  margin-bottom: 1rem;
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--box-shadow);
@@ -1359,6 +1359,7 @@ ul {
 
 .article-image img {
   width: 100%;
+  max-width:400px;
   height: auto;
   display: block;
   transition: transform 0.5s ease;
