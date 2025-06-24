@@ -340,63 +340,48 @@ description: Создание, поддержка и продвижение са
 		</div>
 	</section>
 
-<section class="news news--minimal" id="news">
-  <div class="container">
-    <h2 class="section-title news__title">Последние новости</h2>
-    <p class="section-subtitle news__subtitle">Актуальные статьи и обновления в сфере SEO и веб-разработки</p>
-    
-    <div class="news__list">
-      <article class="news-item" itemscope itemtype="http://schema.org/Article">
-        <div class="news-item__icon">
-          <img src="images/icons/trends-icon.webp" alt="Иконка трендов" class="news-item__icon-img">
-        </div>
-        <div class="news-item__content">
-          <time class="news-item__date" datetime="2025-05-15" itemprop="datePublished">15 мая 2025</time>
-          <h3 class="news-item__title" itemprop="headline">
-            <a href="/news/seo-trends-2025" itemprop="url">Топ SEO трендов 2025 года</a>
-          </h3>
-          <div class="news-item__excerpt" itemprop="description">
-            Разбираем ключевые изменения в алгоритмах поисковых систем и новые подходы к оптимизации сайтов.
-          </div>
-        </div>
-      </article>
-      
-      <article class="news-item" itemscope itemtype="http://schema.org/Article">
-        <div class="news-item__icon">
-          <img src="images/icons/speed-icon.webp" alt="Иконка скорости" class="news-item__icon-img">
-        </div>
-        <div class="news-item__content">
-          <time class="news-item__date" datetime="2025-04-28" itemprop="datePublished">28 апр. 2025</time>
-          <h3 class="news-item__title" itemprop="headline">
-            <a href="/news/web-performance-optimization" itemprop="url">Как ускорить сайт на 50%</a>
-          </h3>
-          <div class="news-item__excerpt" itemprop="description">
-            Практические советы по оптимизации производительности веб-сайтов без потери качества.
-          </div>
-        </div>
-      </article>
-      
-      <article class="news-item" itemscope itemtype="http://schema.org/Article">
-        <div class="news-item__icon">
-          <img src="images/icons/bitrix-icon.webp" alt="Иконка Битрикс" class="news-item__icon-img">
-        </div>
-        <div class="news-item__content">
-          <time class="news-item__date" datetime="2025-04-10" itemprop="datePublished">10 апр. 2025</time>
-          <h3 class="news-item__title" itemprop="headline">
-            <a href="/news/bitrix-update-2025" itemprop="url">Новое в 1С-Битрикс 2025</a>
-          </h3>
-          <div class="news-item__excerpt" itemprop="description">
-            Обзор ключевых изменений и новых возможностей в последней версии популярной CMS.
-          </div>
-        </div>
-      </article>
-    </div>
-    
-    <div class="news__footer">
-      <a href="/news" class="button button--primary">Все новости</a>
-    </div>
-  </div>
-</section>
+	<!-- Добавить после блока Advantages и перед Contact -->
+	<section class="news news--minimal" id="news">
+	  <div class="container">
+		<h2 class="section-title news__title">Последние новости</h2>
+		<p class="section-subtitle news__subtitle">Актуальные статьи и обновления в сфере SEO и веб-разработки</p>
+		
+		<div class="news__list">
+		  {% assign latest_news = site.posts | where: "layout", "news" | sort: "date" | reverse | limit: 3 %}
+		  {% for post in latest_news %}
+		  <article class="news-item" itemscope itemtype="http://schema.org/Article">
+			<div class="news-item__icon">
+			  {% if post.category == "seo" %}
+				<img src="/images/icons/seo-icon.webp" alt="Иконка SEO" class="news-item__icon-img">
+			  {% elsif post.category == "development" %}
+				<img src="/images/icons/dev-icon.webp" alt="Иконка разработки" class="news-item__icon-img">
+			  {% else %}
+				<img src="/images/icons/news-icon.webp" alt="Иконка новости" class="news-item__icon-img">
+			  {% endif %}
+			</div>
+			<div class="news-item__content">
+			  <time class="news-item__date" datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">
+				{{ post.date | date: "%d.%m.%Y" }}
+			  </time>
+			  <h3 class="news-item__title" itemprop="headline">
+				<a href="{{ post.url }}" itemprop="url">{{ post.name }}</a>
+			  </h3>
+			  <div class="news-item__excerpt" itemprop="description">
+				{{ post.description | truncate: 120 }}
+			  </div>
+			  <div class="news-item__category">
+				<a href="/category/{{ post.category }}/">{{ site.data.categories[post.category] }}</a>
+			  </div>
+			</div>
+		  </article>
+		  {% endfor %}
+		</div>
+		
+		<div class="news__footer">
+		  <a href="/news/" class="button button--primary">Все новости</a>
+		</div>
+	  </div>
+	</section>
 
 	<!-- Форма обратной связи -->
 	<section class="contact" id="contact">
