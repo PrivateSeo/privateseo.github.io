@@ -351,13 +351,7 @@ description: Создание, поддержка и продвижение са
 		  {% for post in latest_news %}
 		  <article class="news-item" itemscope itemtype="http://schema.org/Article">
 			<div class="news-item__icon">
-			  {% if post.category == "seo" %}
-				<img src="/images/icons/seo-icon.webp" alt="Иконка SEO" class="news-item__icon-img">
-			  {% elsif post.category == "development" %}
-				<img src="/images/icons/dev-icon.webp" alt="Иконка разработки" class="news-item__icon-img">
-			  {% else %}
-				<img src="/images/icons/news-icon.webp" alt="Иконка новости" class="news-item__icon-img">
-			  {% endif %}
+				<img src="{{ post.image }}" alt="{{ post.name }}" loading="lazy">
 			</div>
 			<div class="news-item__content">
 			  <time class="news-item__date" datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">
