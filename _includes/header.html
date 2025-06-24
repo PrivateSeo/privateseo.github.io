@@ -1,4 +1,4 @@
-<header class="header" itemscope itemtype="http://schema.org/WPHeader">
+<header class="header test" itemscope itemtype="http://schema.org/WPHeader">
   <div class="container header__container">
     <div class="header__logo">
       <a href="{{ '/' | relative_url }}" class="logo" itemprop="url">
@@ -7,32 +7,7 @@
       </a>
     </div>
     
-    <nav class="header__nav nav" itemscope itemtype="http://schema.org/SiteNavigationElement">
-      <button class="nav__toggle" aria-label="Меню">
-        <span class="nav__toggle-line"></span>
-      </button>
-      
-      <ul class="nav__list">
-        <li class="nav__item">
-          <a href="https://privseo.ru/#hero" class="nav__link" itemprop="url">Главная</a>
-        </li>
-        <li class="nav__item">
-          <a href="https://privseo.ru/#about" class="nav__link" itemprop="url">Обо мне</a>
-        </li>
-        <li class="nav__item">
-          <a href="https://privseo.ru/#services" class="nav__link" itemprop="url">Услуги</a>
-        </li>
-        <li class="nav__item">
-          <a href="https://privseo.ru/#portfolio" class="nav__link" itemprop="url">Портфолио</a>
-        </li>
-        <li class="nav__item">
-          <a href="#reviews" class="nav__link" itemprop="url">Отзывы</a>
-        </li>
-        <li class="nav__item">
-          <a href="https://privseo.ru/#contact" class="nav__link" itemprop="url">Контакты</a>
-        </li>
-      </ul>
-    </nav>
+    {% include menu.html %}
     
     <div class="header__contacts">
       <a href="tel:+79915048150" class="contact-phone" itemprop="telephone">+7 (991) 504-81-50</a>
