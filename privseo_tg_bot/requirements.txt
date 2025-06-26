@@ -1,6 +1,5 @@
 pyTelegramBotAPI==4.16.1
 requests==2.31.0
-Pillow==9.5.0  # Понижаем версию для совместимости
+Pillow==9.5.0 --global-option="--disable-platform-guessing"
 PyYAML==6.0.1
 python-dotenv==1.0.1
-setuptools==68.0.0
