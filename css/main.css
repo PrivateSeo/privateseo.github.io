@@ -1352,9 +1352,6 @@ ul {
 
 .article-image {
   margin-bottom: 1rem;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  box-shadow: var(--box-shadow);
   display: inline-block;
 }
 
@@ -1485,6 +1482,9 @@ ul {
   flex-wrap: wrap;
   gap: 3rem;
   margin-bottom: 4rem;
+      border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
 }
 
 .article-image {
@@ -1501,11 +1501,6 @@ ul {
 
 /* Стили формы в статье */
 .article-contact-form .contact__form {
-  background-color: #fff;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: 3rem;
-  height: 100%;
 }
 
 .form-title {
