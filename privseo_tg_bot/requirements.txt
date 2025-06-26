@@ -1,5 +1,6 @@
 pyTelegramBotAPI==4.16.1
 requests==2.31.0
-pillow==10.3.0
-pyyaml==6.0.1
+Pillow==9.5.0  # Понижаем версию для совместимости
+PyYAML==6.0.1
 python-dotenv==1.0.1
+setuptools==68.0.0
