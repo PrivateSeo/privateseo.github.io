@@ -13,14 +13,63 @@ layout: default
       </div>
       
       <h1 class="article-title" itemprop="headline">{{ page.name }}</h1>
-      
+    <div class="article-text-wrapper">      
       {% if page.image %}
         <div class="article-image" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
           <img src="{{ page.image }}" alt="{{ page.name }}" itemprop="url">
           <meta itemprop="width" content="1200">
           <meta itemprop="height" content="630">
         </div>
+
+    
+
+      <!-- Новая форма обратной связи -->
+      <div class="article-contact-form">
+        <div class="contact__form">
+          <h3 class="form-title">Остались вопросы?</h3>
+          <p class="form-subtitle">Напишите мне, отвечу в течение дня</p>
+          <form class="form" id="contact-form" itemscope="" itemtype="http://schema.org/ContactPage">
+            <div class="form__group">
+              <input type="text" class="form__input" id="name" name="name" required="" placeholder=" " itemprop="name">
+              <label for="name" class="form__label">Ваше имя</label>
+            </div>
+            
+            <div class="form__group">
+              <input type="email" class="form__input" id="email" name="email" required="" placeholder=" " itemprop="email">
+              <label for="email" class="form__label">Email</label>
+            </div>
+            
+            <div class="form__group">
+              <input type="tel" class="form__input" id="phone" name="phone" placeholder=" " itemprop="telephone">
+              <label for="phone" class="form__label">Телефон (необязательно)</label>
+            </div>
+            
+            <div class="form__group">
+              <textarea class="form__textarea" id="message" name="message" required="" placeholder=" " itemprop="message"></textarea>
+              <label for="message" class="form__label">Сообщение</label>
+            </div>
+            
+            <button type="submit" class="button button--primary form__button">Отправить сообщение</button>
+          </form>
+          
+          <div class="form-social">
+            <p class="social-text">Или напишите в мессенджер:</p>
+            <div class="social-links">
+              <a href="https://t.me/robDaNilov" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Telegram" itemprop="url">
+                <img src="/images/telegram.webp" alt="Telegram" class="social-icon">
+              </a>
+              <a href="https://wa.me/79607918623" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" itemprop="url">
+                <img src="/images/whatsapp.webp" alt="WhatsApp" class="social-icon">
+              </a>
+              <a href="https://teams.microsoft.com/l/chat/0/0?users=DanilovRob@ya.ru" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Microsoft Teams" itemprop="url">
+                <img src="/images/microsoft.webp" alt="Microsoft Teams" class="social-icon">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
       {% endif %}
+    </div>
     </div>
   </header>
   
