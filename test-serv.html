@@ -168,50 +168,62 @@ https://example.net"></textarea>
                 }
             });
             
-            async function analyzeSEO(url) {
-                // Проверяем, что URL начинается с http:// или https://
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    url = 'https://' + url;
+async function analyzeSEO(url) {
+    // Проверяем, что URL начинается с http:// или https://
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+    }
+    
+    // Пробуем несколько разных прокси-серверов
+    const proxyUrls = [
+        `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`,
+        `https://cors-anywhere.herokuapp.com/${encodeURIComponent(url)}`,
+        `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(url)}`
+    ];
+    
+    let lastError = null;
+    
+    for (const proxyUrl of proxyUrls) {
+        try {
+            const response = await fetch(proxyUrl, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
-                
-                // Используем прокси для обхода CORS
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-                
-                try {
-                    // Получаем HTML страницы
-                    const response = await fetch(proxyUrl);
-                    if (!response.ok) throw new Error('Не удалось загрузить страницу');
-                    
-                    const data = await response.json();
-                    if (data.contents) {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(data.contents, 'text/html');
-                        
-                        // Извлекаем SEO-данные
-                        return {
-                            url,
-                            title: getTitle(doc),
-                            description: getMeta(doc, 'description'),
-                            keywords: getMeta(doc, 'keywords'),
-                            h1: getH1(doc),
-                            h2Count: getHeadingCount(doc, 'h2'),
-                            imagesWithoutAlt: getImagesWithoutAlt(doc),
-                            canonical: getCanonical(doc),
-                            robots: getMeta(doc, 'robots'),
-                            viewport: getMeta(doc, 'viewport'),
-                            ogTitle: getMetaProperty(doc, 'og:title'),
-                            ogDescription: getMetaProperty(doc, 'og:description'),
-                            wordCount: getWordCount(doc),
-                            linksCount: getLinksCount(doc)
-                        };
-                    } else {
-                        throw new Error('Содержимое страницы недоступно');
-                    }
-                } catch (error) {
-                    throw new Error(`Ошибка анализа ${url}: ${error.message}`);
-                }
-            }
+            });
             
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            return {
+                url,
+                title: getTitle(doc),
+                description: getMeta(doc, 'description'),
+                keywords: getMeta(doc, 'keywords'),
+                h1: getH1(doc),
+                h2Count: getHeadingCount(doc, 'h2'),
+                imagesWithoutAlt: getImagesWithoutAlt(doc),
+                canonical: getCanonical(doc),
+                robots: getMeta(doc, 'robots'),
+                viewport: getMeta(doc, 'viewport'),
+                ogTitle: getMetaProperty(doc, 'og:title'),
+                ogDescription: getMetaProperty(doc, 'og:description'),
+                wordCount: getWordCount(doc),
+                linksCount: getLinksCount(doc),
+                error: null
+            };
+        } catch (error) {
+            lastError = error;
+            console.warn(`Proxy failed (${proxyUrl}):`, error);
+            // Пробуем следующий прокси
+            continue;
+        }
+    }
+    
+    throw new Error(`All proxies failed: ${lastError ? lastError.message : 'Unknown error'}`);
+}            
             // Вспомогательные функции для извлечения SEO-данных
             function getTitle(doc) {
                 const title = doc.querySelector('title');
