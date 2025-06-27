@@ -92,15 +92,27 @@
             color: #e74c3c;
             font-style: italic;
         }
+        .warning {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>SEO Comparison Tool</h1>
         
+        <div class="warning">
+            <strong>Примечание:</strong> Из-за ограничений CORS некоторые сайты могут не анализироваться. 
+            Для полной функциональности рекомендуется использовать браузер с отключенной политикой безопасности CORS 
+            или серверное решение.
+        </div>
+        
         <div class="input-section">
             <h2>Введите URL для анализа</h2>
-            <p>Укажите по одному URL на строку</p>
+            <p>Укажите по одному URL на строку (например: example.com или https://example.com)</p>
             <textarea id="urls" placeholder="https://example.com
 https://example.org
 https://example.net"></textarea>
@@ -127,10 +139,35 @@ https://example.net"></textarea>
             const resultsDiv = document.getElementById('results');
             const progressBar = document.getElementById('progress');
             
+            // Список прокси-серверов для обхода CORS
+            const PROXY_SERVERS = [
+                {
+                    name: 'CodeTabs',
+                    url: url => `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`
+                },
+                {
+                    name: 'CORS Anywhere',
+                    url: url => `https://cors-anywhere.herokuapp.com/${encodeURIComponent(url)}`,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                },
+                {
+                    name: 'AllOrigins',
+                    url: url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+                    transform: data => data.contents
+                },
+                {
+                    name: 'ThingProxy',
+                    url: url => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(url)}`
+                }
+            ];
+            
             analyzeBtn.addEventListener('click', async function() {
                 const urls = urlsTextarea.value.split('\n')
                     .map(url => url.trim())
-                    .filter(url => url.length > 0);
+                    .filter(url => url.length > 0)
+                    .map(fixUrl);
                 
                 if (urls.length === 0) {
                     alert('Пожалуйста, введите хотя бы один URL');
@@ -146,7 +183,7 @@ https://example.net"></textarea>
                     
                     for (let i = 0; i < urls.length; i++) {
                         const url = urls[i];
-                        progressBar.style.width = `${(i / urls.length) * 100}%`;
+                        progressBar.style.width = `${((i + 1) / urls.length) * 100}%`;
                         
                         try {
                             const seoData = await analyzeSEO(url);
@@ -159,7 +196,6 @@ https://example.net"></textarea>
                         }
                     }
                     
-                    progressBar.style.width = '100%';
                     displayResults(results);
                 } catch (error) {
                     resultsDiv.innerHTML = `<div class="error">Произошла ошибка: ${error.message}</div>`;
@@ -168,62 +204,77 @@ https://example.net"></textarea>
                 }
             });
             
-async function analyzeSEO(url) {
-    // Проверяем, что URL начинается с http:// или https://
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
-    }
-    
-    // Пробуем несколько разных прокси-серверов
-    const proxyUrls = [
-        `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`,
-        `https://cors-anywhere.herokuapp.com/${encodeURIComponent(url)}`,
-        `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(url)}`
-    ];
-    
-    let lastError = null;
-    
-    for (const proxyUrl of proxyUrls) {
-        try {
-            const response = await fetch(proxyUrl, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+            function fixUrl(url) {
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    return 'https://' + url;
                 }
-            });
+                return url;
+            }
             
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            async function analyzeSEO(url) {
+                let lastError = null;
+                
+                // Пробуем все доступные прокси по очереди
+                for (const proxy of PROXY_SERVERS) {
+                    try {
+                        console.log(`Пробуем прокси ${proxy.name} для ${url}`);
+                        const response = await fetch(proxy.url(url), {
+                            headers: proxy.headers || {}
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        let html = await response.text();
+                        
+                        // Если прокси возвращает данные в обертке (например AllOrigins)
+                        if (proxy.transform) {
+                            try {
+                                const data = JSON.parse(html);
+                                html = proxy.transform(data);
+                                if (!html) throw new Error('No content in response');
+                            } catch (e) {
+                                throw new Error('Invalid proxy response format');
+                            }
+                        }
+                        
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        
+                        // Проверяем, что парсинг прошел успешно
+                        if (doc.querySelector('parsererror')) {
+                            throw new Error('Failed to parse HTML');
+                        }
+                        
+                        return {
+                            url,
+                            title: getTitle(doc),
+                            description: getMeta(doc, 'description'),
+                            keywords: getMeta(doc, 'keywords'),
+                            h1: getH1(doc),
+                            h2Count: getHeadingCount(doc, 'h2'),
+                            imagesWithoutAlt: getImagesWithoutAlt(doc),
+                            canonical: getCanonical(doc),
+                            robots: getMeta(doc, 'robots'),
+                            viewport: getMeta(doc, 'viewport'),
+                            ogTitle: getMetaProperty(doc, 'og:title'),
+                            ogDescription: getMetaProperty(doc, 'og:description'),
+                            wordCount: getWordCount(doc),
+                            linksCount: getLinksCount(doc),
+                            error: null
+                        };
+                    } catch (error) {
+                        lastError = error;
+                        console.warn(`Proxy ${proxy.name} failed:`, error);
+                        // Пробуем следующий прокси
+                        continue;
+                    }
+                }
+                
+                throw new Error(lastError ? lastError.message : 'All proxies failed');
+            }
             
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            
-            return {
-                url,
-                title: getTitle(doc),
-                description: getMeta(doc, 'description'),
-                keywords: getMeta(doc, 'keywords'),
-                h1: getH1(doc),
-                h2Count: getHeadingCount(doc, 'h2'),
-                imagesWithoutAlt: getImagesWithoutAlt(doc),
-                canonical: getCanonical(doc),
-                robots: getMeta(doc, 'robots'),
-                viewport: getMeta(doc, 'viewport'),
-                ogTitle: getMetaProperty(doc, 'og:title'),
-                ogDescription: getMetaProperty(doc, 'og:description'),
-                wordCount: getWordCount(doc),
-                linksCount: getLinksCount(doc),
-                error: null
-            };
-        } catch (error) {
-            lastError = error;
-            console.warn(`Proxy failed (${proxyUrl}):`, error);
-            // Пробуем следующий прокси
-            continue;
-        }
-    }
-    
-    throw new Error(`All proxies failed: ${lastError ? lastError.message : 'Unknown error'}`);
-}            
             // Вспомогательные функции для извлечения SEO-данных
             function getTitle(doc) {
                 const title = doc.querySelector('title');
@@ -283,7 +334,7 @@ async function analyzeSEO(url) {
                 
                 // Добавляем заголовки столбцов (URL)
                 results.forEach(result => {
-                    tableHtml += `<th>${result.url}</th>`;
+                    tableHtml += `<th title="${result.url}">${new URL(result.url).hostname}</th>`;
                 });
                 
                 tableHtml += '</tr></thead><tbody>';
@@ -293,7 +344,7 @@ async function analyzeSEO(url) {
                     // Если есть ошибки
                     tableHtml += `<tr><td>Статус</td>`;
                     results.forEach(result => {
-                        tableHtml += `<td class="error">${result.error}</td>`;
+                        tableHtml += `<td class="error">${result.error || 'Ошибка'}</td>`;
                     });
                     tableHtml += '</tr>';
                 } else {
@@ -326,6 +377,11 @@ async function analyzeSEO(url) {
                     } else {
                         const value = result[field];
                         let cellClass = '';
+                        let displayValue = value;
+                        
+                        if (value === null || value === undefined) {
+                            displayValue = 'N/A';
+                        }
                         
                         if (typeof value === 'number' && minGood !== null && maxGood !== null) {
                             if (reverse) {
@@ -341,7 +397,7 @@ async function analyzeSEO(url) {
                             }
                         }
                         
-                        tableHtml += `<td class="${cellClass}">${value}</td>`;
+                        tableHtml += `<td class="${cellClass}">${displayValue}</td>`;
                     }
                 });
                 
