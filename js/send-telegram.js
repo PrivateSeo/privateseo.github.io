@@ -10,6 +10,7 @@ async function sendToTelegram(formData) {
   if (formData.phone) message += `\nТелефон: ${formData.phone}`;
   if (formData.email) message += `\nEmail: ${formData.email}`;
   if (formData.message) message += `\nСообщение: ${formData.message}`;
+  if (formData.service) message += `\nУслуга: ${formData.service}`;
   
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
   const body = new URLSearchParams();
@@ -44,7 +45,8 @@ function setupForm(formId, modalId = null) {
       name: form.querySelector('[name="name"]')?.value,
       phone: form.querySelector('[name="phone"]')?.value,
       email: form.querySelector('[name="email"]')?.value,
-      message: form.querySelector('[name="message"]')?.value
+      message: form.querySelector('[name="message"]')?.value,
+      service: form.querySelector('[name="service"]')?.value
     };
 
     try {
@@ -54,6 +56,7 @@ function setupForm(formId, modalId = null) {
         form.reset();
         if (modalId) {
           document.getElementById(modalId)?.classList.remove('active');
+          document.body.style.overflow = '';
         }
       } else {
         throw new Error('Не удалось отправить заявку');
@@ -70,7 +73,69 @@ function setupForm(formId, modalId = null) {
 
 // Инициализация всех форм при загрузке
 document.addEventListener('DOMContentLoaded', () => {
+  // Существующие формы
   setupForm('consultation-form', 'consultation-modal');
   setupForm('callback-form', 'callback-modal');
   setupForm('contact-form'); // Для формы без модального окна
+  
+  // Новая форма заказа из блока цен
+  setupForm('order-form', 'order-modal');
+  
+  // Табы для блока цен
+  const tabs = document.querySelectorAll('.pricing__tab');
+  const contents = document.querySelectorAll('.pricing__content');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs and contents
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      
+      // Add active class to clicked tab
+      tab.classList.add('active');
+      
+      // Show corresponding content
+      const tabId = tab.getAttribute('data-tab');
+      document.getElementById(`${tabId}-tab`).classList.add('active');
+    });
+  });
+  
+  // Обработка кнопок "Заказать" в карточках цен
+  const orderButtons = document.querySelectorAll('[data-modal="order"]');
+  const orderModal = document.getElementById('order-modal');
+  const serviceName = document.getElementById('service-name');
+  const serviceInput = document.getElementById('service-input');
+  
+  orderButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const service = button.getAttribute('data-service');
+      serviceName.textContent = service;
+      serviceInput.value = service;
+      
+      // Show modal
+      orderModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  
+  // Закрытие модальных окон
+  const closeButtons = document.querySelectorAll('.modal__close');
+  closeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.classList.remove('active');
+      });
+      document.body.style.overflow = '';
+    });
+  });
+  
+  // Закрытие при клике вне модального окна
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  });
 });
