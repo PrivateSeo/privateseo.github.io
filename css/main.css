@@ -1352,9 +1352,6 @@ ul {
 
 .article-image {
   margin-bottom: 1rem;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  box-shadow: var(--box-shadow);
   display: inline-block;
 }
 
@@ -1476,4 +1473,227 @@ ul {
   .article-text h3 {
     font-size: 2rem;
   }
+}
+
+
+/* Стили для обертки контента статьи */
+.article-text-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+  margin-bottom: 4rem;
+      border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+}
+
+.article-image {
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.article-contact-form {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+/* Стили формы в статье */
+.article-contact-form .contact__form {
+	    padding: 30px;
+    border-radius: initial;
+    box-shadow: none;
+}
+
+.form-title {
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark-color);
+}
+
+.form-subtitle {
+  color: var(--gray-dark);
+  margin-bottom: 2rem;
+  font-size: 1.6rem;
+}
+
+/* Стили для социальных иконок в форме */
+.form-social {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--gray-light);
+}
+
+.social-text {
+  color: var(--gray-dark);
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: rgba(67, 97, 238, 0.1);
+  transition: var(--transition);
+}
+
+.social-link:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-3px);
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  transition: var(--transition);
+}
+
+.social-link:hover .social-icon {
+  filter: brightness(0) invert(1);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+  .article-text-wrapper {
+    flex-direction: column;
+  }
+  
+  .article-image,
+  .article-contact-form {
+    max-width: 100%;
+  }
+  
+  .article-contact-form .contact__form {
+    padding: 2rem;
+  }
+}
+
+/* CSS */
+.pricing {
+  padding: 8rem 0;
+  background-color: white;
+}
+
+.pricing__tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4rem;
+  gap: 1rem;
+}
+
+.pricing__tab {
+  padding: 1rem 2rem;
+  border: none;
+  background-color: var(--gray-light);
+  color: var(--gray-dark);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+}
+
+.pricing__tab.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.pricing__content {
+  display: none;
+}
+
+.pricing__content.active {
+  display: block;
+}
+
+.pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+}
+
+.pricing-card {
+  background-color: var(--light-color);
+  padding: 3rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  position: relative;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+}
+
+.pricing-card--popular {
+  border: 2px solid var(--primary-color);
+}
+
+.pricing-card__badge {
+  position: absolute;
+  top: -15px;
+  right: 20px;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.pricing-card__title {
+  font-size: 2.4rem;
+  margin-bottom: 1.5rem;
+  color: var(--dark-color);
+}
+
+.pricing-card__price {
+  margin-bottom: 2rem;
+}
+
+.pricing-card__amount {
+  font-size: 3.6rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.pricing-card__period {
+  font-size: 1.4rem;
+  color: var(--gray-dark);
+}
+
+.pricing-card__features {
+  margin-bottom: 3rem;
+}
+
+.pricing-card__features li {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.pricing-card__features li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.8rem;
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+}
+
+.pricing-card__button {
+  width: 100%;
 }
