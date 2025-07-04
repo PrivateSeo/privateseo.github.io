@@ -177,3 +177,78 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+
+// JavaScript for Tabs and Modal
+document.addEventListener('DOMContentLoaded', function() {
+  // Tab switching
+  const tabs = document.querySelectorAll('.pricing__tab');
+  const contents = document.querySelectorAll('.pricing__content');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs and contents
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      
+      // Add active class to clicked tab
+      tab.classList.add('active');
+      
+      // Show corresponding content
+      const tabId = tab.getAttribute('data-tab');
+      document.getElementById(`${tabId}-tab`).classList.add('active');
+    });
+  });
+  
+  // Order modal handling
+  const orderButtons = document.querySelectorAll('[data-modal="order"]');
+  const orderModal = document.getElementById('order-modal');
+  const serviceName = document.getElementById('service-name');
+  const serviceInput = document.getElementById('service-input');
+  
+  orderButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const service = button.getAttribute('data-service');
+      serviceName.textContent = service;
+      serviceInput.value = service;
+      
+      // Show modal
+      orderModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  
+  // Close modal
+  const closeButtons = document.querySelectorAll('.modal__close');
+  closeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      orderModal.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+  });
+  
+  // Close modal when clicking outside
+  orderModal.addEventListener('click', (e) => {
+    if (e.target === orderModal) {
+      orderModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+  
+  // Form submission
+  const orderForm = document.getElementById('order-form');
+  if (orderForm) {
+    orderForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Here you would normally send the form data
+      // For example using fetch or AJAX
+      
+      // Simulate successful submission
+      alert('Спасибо за заявку! Мы свяжемся с вами в ближайшее время.');
+      orderModal.classList.remove('active');
+      document.body.style.overflow = '';
+      orderForm.reset();
+    });
+  }
+});

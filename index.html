@@ -151,6 +151,7 @@ description: Создание, поддержка и продвижение са
 			</div>
 		</div>
 	</section>
+	<!-- блок с ценами -->
 	<section class="pricing" id="pricing">
 	  <div class="container">
 		<h2 class="section-title pricing__title">Стоимость услуг</h2>
@@ -162,6 +163,7 @@ description: Создание, поддержка и продвижение са
 		  <button class="pricing__tab" data-tab="support">Сопровождение</button>
 		</div>
 		
+		<!-- SEO Tab -->
 		<div class="pricing__content active" id="seo-tab">
 		  <div class="pricing__grid">
 			<div class="pricing-card">
@@ -177,7 +179,7 @@ description: Создание, поддержка и продвижение са
 				<li>Оптимизация 10 страниц</li>
 				<li>Отчетность 1 раз в месяц</li>
 			  </ul>
-			  <button class="button button--primary pricing-card__button" data-modal="order">Заказать</button>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="SEO Старт">Заказать</button>
 			</div>
 			
 			<div class="pricing-card pricing-card--popular">
@@ -195,7 +197,7 @@ description: Создание, поддержка и продвижение са
 				<li>Контент-поддержка (2 статьи)</li>
 				<li>Отчетность 2 раза в месяц</li>
 			  </ul>
-			  <button class="button button--primary pricing-card__button" data-modal="order">Заказать</button>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="SEO Бизнес">Заказать</button>
 			</div>
 			
 			<div class="pricing-card">
@@ -213,14 +215,161 @@ description: Создание, поддержка и продвижение са
 				<li>Еженедельные отчеты</li>
 				<li>Консультации по контекстной рекламе</li>
 			  </ul>
-			  <button class="button button--primary pricing-card__button" data-modal="order">Заказать</button>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="SEO Премиум">Заказать</button>
 			</div>
 		  </div>
 		</div>
 		
-		<!-- Аналогичные блоки для других вкладок -->
+		<!-- Development Tab -->
+		<div class="pricing__content" id="development-tab">
+		  <div class="pricing__grid">
+			<div class="pricing-card">
+			  <h3 class="pricing-card__title">Лендинг</h3>
+			  <div class="pricing-card__price">
+				<span class="pricing-card__amount">45,000₽</span>
+				<span class="pricing-card__period">одноразово</span>
+			  </div>
+			  <ul class="pricing-card__features">
+				<li>Адаптивный дизайн</li>
+				<li>До 5 блоков</li>
+				<li>Форма обратной связи</li>
+				<li>Базовая SEO-оптимизация</li>
+				<li>Интеграция с соцсетями</li>
+			  </ul>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="Лендинг">Заказать</button>
+			</div>
+			
+			<div class="pricing-card pricing-card--popular">
+			  <div class="pricing-card__badge">Популярный</div>
+			  <h3 class="pricing-card__title">Корпоративный сайт</h3>
+			  <div class="pricing-card__price">
+				<span class="pricing-card__amount">90,000₽</span>
+				<span class="pricing-card__period">одноразово</span>
+			  </div>
+			  <ul class="pricing-card__features">
+				<li>Индивидуальный дизайн</li>
+				<li>До 15 страниц</li>
+				<li>Многоуровневое меню</li>
+				<li>Галерея/портфолио</li>
+				<li>Блог с комментариями</li>
+				<li>Форма заявки</li>
+			  </ul>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="Корпоративный сайт">Заказать</button>
+			</div>
+			
+			<div class="pricing-card">
+			  <h3 class="pricing-card__title">Интернет-магазин</h3>
+			  <div class="pricing-card__price">
+				<span class="pricing-card__amount">180,000₽</span>
+				<span class="pricing-card__period">одноразово</span>
+			  </div>
+			  <ul class="pricing-card__features">
+				<li>Каталог товаров</li>
+				<li>Корзина и оформление заказа</li>
+				<li>Личный кабинет</li>
+				<li>Фильтры и поиск</li>
+				<li>Интеграция с платежными системами</li>
+				<li>CRM-интеграция</li>
+				<li>Мобильное приложение (доп.)</li>
+			  </ul>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="Интернет-магазин">Заказать</button>
+			</div>
+		  </div>
+		</div>
+		
+		<!-- Support Tab -->
+		<div class="pricing__content" id="support-tab">
+		  <div class="pricing__grid">
+			<div class="pricing-card">
+			  <h3 class="pricing-card__title">Базовое</h3>
+			  <div class="pricing-card__price">
+				<span class="pricing-card__amount">13,500₽</span>
+				<span class="pricing-card__period">/месяц</span>
+			  </div>
+			  <ul class="pricing-card__features">
+				<li>Техническая поддержка 8/5</li>
+				<li>Обновление CMS и плагинов</li>
+				<li>Резервное копирование</li>
+				<li>Исправление критических ошибок</li>
+				<li>До 2 часов работы в месяц</li>
+			  </ul>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="Сопровождение Базовое">Заказать</button>
+			</div>
+			
+			<div class="pricing-card pricing-card--popular">
+			  <div class="pricing-card__badge">Популярный</div>
+			  <h3 class="pricing-card__title">Стандарт</h3>
+			  <div class="pricing-card__price">
+				<span class="pricing-card__amount">27,000₽</span>
+				<span class="pricing-card__period">/месяц</span>
+			  </div>
+			  <ul class="pricing-card__features">
+				<li>Техническая поддержка 24/7</li>
+				<li>Полное администрирование</li>
+				<li>Еженедельные бэкапы</li>
+				<li>Мониторинг безопасности</li>
+				<li>До 5 часов работы в месяц</li>
+				<li>Контент-обновления</li>
+			  </ul>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="Сопровождение Стандарт">Заказать</button>
+			</div>
+			
+			<div class="pricing-card">
+			  <h3 class="pricing-card__title">Все включено</h3>
+			  <div class="pricing-card__price">
+				<span class="pricing-card__amount">45,000₽</span>
+				<span class="pricing-card__period">/месяц</span>
+			  </div>
+			  <ul class="pricing-card__features">
+				<li>Приоритетная поддержка 24/7</li>
+				<li>Полное администрирование</li>
+				<li>Ежедневные бэкапы</li>
+				<li>Защита от DDoS и взлома</li>
+				<li>До 10 часов работы в месяц</li>
+				<li>Контент-обновления</li>
+				<li>SEO-мониторинг</li>
+				<li>Ежемесячный отчет</li>
+			  </ul>
+			  <button class="button button--primary pricing-card__button" data-modal="order" data-service="Сопровождение Все включено">Заказать</button>
+			</div>
+		  </div>
+		</div>
 	  </div>
 	</section>
+
+	<!-- Modal for Order -->
+	<div class="modal" id="order-modal">
+	  <div class="modal__content">
+		<button class="modal__close">&times;</button>
+		<h3 class="modal__title">Заказ услуги: <span id="service-name"></span></h3>
+		<form class="form" id="order-form">
+		  <input type="hidden" name="service" id="service-input">
+		  
+		  <div class="form__group">
+			<input type="text" class="form__input" name="name" required placeholder=" ">
+			<label class="form__label">Ваше имя</label>
+		  </div>
+		  
+		  <div class="form__group">
+			<input type="tel" class="form__input" name="phone" required placeholder=" ">
+			<label class="form__label">Телефон</label>
+		  </div>
+		  
+		  <div class="form__group">
+			<input type="email" class="form__input" name="email" placeholder=" ">
+			<label class="form__label">Email (необязательно)</label>
+		  </div>
+		  
+		  <div class="form__group">
+			<textarea class="form__textarea" name="message" placeholder=" "></textarea>
+			<label class="form__label">Комментарий (необязательно)</label>
+		  </div>
+		  
+		  <button type="submit" class="button button--primary">Отправить заявку</button>
+		</form>
+	  </div>
+	</div>
+
 	<!-- Портфолио -->
 	<section class="portfolio" id="portfolio">
 		<div class="container">
