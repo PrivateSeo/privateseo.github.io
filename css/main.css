@@ -2097,3 +2097,80 @@ ul {
         grid-template-columns: 1fr;
     }
 }
+
+/* Добавляем в main.css */
+.tools--list {
+  background-color: var(--light-color);
+}
+
+.tools-list {
+  list-style: none;
+  margin-top: 4rem;
+}
+
+.tools-list__item {
+  margin-bottom: 1.5rem;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+}
+
+.tools-list__item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tools-list__link {
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+  color: var(--dark-color);
+  transition: var(--transition);
+}
+
+.tools-list__link:hover {
+  color: var(--primary-color);
+}
+
+.tools-list__icon {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(67, 97, 238, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 2rem;
+  flex-shrink: 0;
+}
+
+.tools-list__icon img {
+  width: 30px;
+  height: 30px;
+}
+
+.tools-list__content {
+  flex-grow: 1;
+}
+
+.tools-list__title {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.tools-list__desc {
+  color: var(--gray-dark);
+  font-size: 1.4rem;
+}
+
+.tools-list__arrow {
+  margin-left: 1rem;
+  color: var(--gray-medium);
+  transition: var(--transition);
+}
+
+.tools-list__link:hover .tools-list__arrow {
+  color: var(--primary-color);
+  transform: translateX(5px);
+}
