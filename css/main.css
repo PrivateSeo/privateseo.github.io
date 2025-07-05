@@ -1717,3 +1717,170 @@ ul {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+        /* Дополнительные стили для конвертера */
+        .converter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .converter-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .converter-title {
+            font-size: 3.6rem;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .converter-description {
+            font-size: 1.8rem;
+            color: var(--gray-dark);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .converter-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .file-info {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .file-info__name {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        #htmlOutput {
+            white-space: pre-wrap;
+            font-family: Consolas, monospace;
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        #preview {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .converter-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .status-message.success {
+            background-color: var(--d4edda);
+            color: var(--155724);
+            display: block;
+        }
+        
+        .status-message.error {
+            background-color: var(--f8d7da);
+            color: var(--721c24);
+            display: block;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: var(--primary-color);
+            border-radius: var(--border-radius);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .image-path-container {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .image-path-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1.6rem;
+            transition: var(--transition);
+            margin-bottom: 10px;
+        }
+        
+        .image-path-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .image-path-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.6rem;
+            color: var(--gray-dark);
+        }
+        
+        .image-path-note {
+            font-size: 1.4rem;
+            color: var(--gray-medium);
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .converter-container {
+                padding: 20px 15px;
+            }
+            
+            .converter-card {
+                padding: 25px;
+            }
+            
+            .converter-title {
+                font-size: 2.8rem;
+            }
+            
+            .converter-description {
+                font-size: 1.6rem;
+            }
+        }
