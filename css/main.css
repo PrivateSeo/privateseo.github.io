@@ -1767,7 +1767,6 @@ ul {
 }
 
 .upload-area {
-    border: 2px dashed var(--gray-medium);
     padding: 4rem 2rem;
     text-align: center;
     border-radius: var(--border-radius);
