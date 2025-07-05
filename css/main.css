@@ -2012,6 +2012,7 @@ ul {
 .converter-steps {
     padding-left: 2rem;
     margin-bottom: 3rem;
+	list-style: none;
 }
 
 .converter-steps li {
