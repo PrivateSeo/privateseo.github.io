@@ -5,22 +5,29 @@
 	<title>Document</title>
 </head>
 <body>
-<script>
-  // URL вашей Netlify-функции
-  const API_URL = 'https://seoparse.netlify.app/.netlify/functions/hello';
+<div id="app">
+  <form id="urlForm">
+    <textarea name="urls" placeholder="Введите URL каждой страницы с новой строки"></textarea>
+    <button type="submit">Анализировать</button>
+  </form>
+  <pre id="result"></pre> <!-- Сюда выведем результат -->
+</div>
 
-  // Запрашиваем данные и выводим приветствие
-  fetch(API_URL)
-    .then(response => response.json())
-    .then(data => {
-      const greetingElement = document.createElement('div');
-      greetingElement.textContent = data.message; 
-      greetingElement.style.fontWeight = 'bold';
-      document.body.prepend(greetingElement); // Добавляем в начало страницы
-    })
-    .catch(error => {
-      console.error('Ошибка:', error);
+<script>
+  document.getElementById('urlForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const urls = e.target.urls.value.split('\n').filter(url => url.trim() !== '');
+    
+    // Отправляем URLs на Netlify-функцию
+    const response = await fetch('https://seoparse.netlify.app/.netlify/functions/hello', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ urls })
     });
-</script>	
+    
+    const data = await response.json();
+    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+  });
+</script>
 </body>
 </html>
