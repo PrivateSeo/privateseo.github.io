@@ -170,6 +170,11 @@ description: Автоматическая кластеризация запро�
             margin-bottom: 20px;
             border-radius: 5px;
         }
+
+.cluster-controls button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
     </style>
 
     <div class="news-article">
@@ -237,6 +242,7 @@ description: Автоматическая кластеризация запро�
                     <button onclick="mergeSelectedClusters()">Объединить выбранные</button>
                     <button onclick="splitCluster()">Разделить кластер</button>
                     <button onclick="recluster()">Перезапустить кластеризацию</button>
+					<button onclick="moveByKeywords()">Перенести или удалить по ключевым словам</button>
                 </div>
 
                 <div id="clusters-container">
@@ -1559,7 +1565,88 @@ function updateExportPreview() {
         input.click();
     }
 
-    // ====================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ======================
+// Перенос запросов по ключевым словам (логическое И)
+// Улучшенная функция для переноса или удаления запросов по ключевым словам
+function moveByKeywords() {
+    if (state.clusters.length === 0) {
+        alert('Нет кластеров для работы');
+        return;
+    }
+
+    // Шаг 1: Выбор ключевых слов
+    const keywordsInput = prompt(
+        'Введите ключевые слова (через запятую).\n' +
+        'Запросы должны содержать ВСЕ указанные слова:\n\n' +
+        'Пример: мачта, алюминиевая\n\n' +
+        'P.S. Для удаления укажите "0" в номере кластера',
+        ''
+    );
+    if (!keywordsInput) return;
+
+    // Шаг 2: Выбор действия (перенос или удаление)
+    const clusterNumber = prompt(
+        `Введите:\n` +
+        `• Номер кластера (1-${state.clusters.length}) для переноса\n` +
+        `• Или "0" для удаления запросов\n\n` +
+        `Текущие кластеры:\n${state.clusters.map((c, i) => `  ${i+1}. ${c.name}`).join('\n')}`,
+        ''
+    );
+    if (clusterNumber === null) return;
+
+    const isDeletionMode = clusterNumber === '0';
+    let targetClusterIndex = parseInt(clusterNumber) - 1;
+
+    // Валидация для переноса
+    if (!isDeletionMode && (isNaN(targetClusterIndex) || targetClusterIndex < 0 || targetClusterIndex >= state.clusters.length)) {
+        alert('Некорректный номер кластера');
+        return;
+    }
+
+    // Подготовка ключевых слов
+    const keywords = keywordsInput.split(',')
+        .map(word => word.trim().toLowerCase())
+        .filter(word => word.length > 0);
+
+    if (keywords.length === 0) {
+        alert('Не указаны ключевые слова');
+        return;
+    }
+
+    // Обработка запросов
+    saveStateToHistory();
+    let processedCount = 0;
+
+    state.clusters.forEach((cluster, clusterIndex) => {
+        // Пропускаем целевой кластер при переносе
+        if (!isDeletionMode && clusterIndex === targetClusterIndex) return;
+
+        cluster.queries = cluster.queries.filter(query => {
+            const queryText = query.text.toLowerCase();
+            const isMatch = keywords.every(keyword => queryText.includes(keyword));
+
+            if (isMatch) {
+                processedCount++;
+                // Перенос в целевой кластер или удаление
+                if (!isDeletionMode) {
+                    state.clusters[targetClusterIndex].queries.push(query);
+                }
+                return false; // Удаляем из текущего кластера
+            }
+            return true; // Оставляем в текущем кластере
+        });
+    });
+
+    // Удаляем пустые кластеры
+    state.clusters = state.clusters.filter(cluster => cluster.queries.length > 0);
+
+    // Логирование
+    renderClusters();
+    if (isDeletionMode) {
+        addHistory(`Удалено ${processedCount} запросов по ключам: ${keywords.join(' + ')}`);
+    } else {
+        addHistory(`Перенесено ${processedCount} запросов в кластер "${state.clusters[targetClusterIndex].name}" по ключам: ${keywords.join(' + ')}`);
+    }
+}    // ====================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ======================
 
     function loadSampleData() {
         elements.queriesInput.value = `купить iPhone 15
