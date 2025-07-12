@@ -1,33 +1,332 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-	<meta charset="UTF-8">
-	<title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Анализ страниц | PrivSEO</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        /* Дополнительные стили для SEO анализа */
+        .seo-analysis {
+            padding: 8rem 0;
+        }
+        
+        .seo-form {
+            background-color: white;
+            padding: 4rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 4rem;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1.6rem;
+            transition: var(--transition);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .results-container {
+            display: none;
+            margin-top: 4rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 3rem;
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:hover td {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .metric-value {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--gray-light);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .url-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
 <body>
-<div id="app">
-  <form id="urlForm">
-    <textarea name="urls" placeholder="Введите URL каждой страницы с новой строки"></textarea>
-    <button type="submit">Анализировать</button>
-  </form>
-  <pre id="result"></pre> <!-- Сюда выведем результат -->
-</div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Анализируем страницы...</div>
+    </div>
 
-<script>
-  document.getElementById('urlForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const urls = e.target.urls.value.split('\n').filter(url => url.trim() !== '');
-    
-    // Отправляем URLs на Netlify-функцию
-    const response = await fetch('https://seoparse.netlify.app/.netlify/functions/hello', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ urls })
-    });
-    
-    const data = await response.json();
-    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-  });
-</script>
+    <main class="seo-analysis">
+        <div class="container">
+            <h1 class="section-title">Сравнительный SEO анализ</h1>
+            <p class="section-subtitle">Введите URL страниц и ключевые фразы для анализа</p>
+            
+            <form id="seoAnalyzerForm" class="seo-form">
+                <div class="form-group">
+                    <label for="urls" class="form-label">URL страниц (каждый с новой строки):</label>
+                    <textarea id="urls" class="form-textarea" name="urls" required placeholder="https://example.com/page1
+https://example.com/page2"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="keywords" class="form-label">Ключевые фразы (через запятую):</label>
+                    <input type="text" id="keywords" class="form-input" name="keywords" required placeholder="купить телефон, smartphone">
+                </div>
+                
+                <button type="submit" class="button button--primary">Анализировать</button>
+                <div id="errorMessage" class="error-message"></div>
+            </form>
+            
+            <div id="resultsContainer" class="results-container">
+                <h2>Результаты анализа</h2>
+                <div id="urlsContainer"></div>
+                
+                <h3 style="margin-top: 3rem;">Сравнительная таблица</h3>
+                <div class="table-responsive">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Параметр</th>
+                                <!-- Колонки для каждого URL будут добавлены динамически -->
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonResults">
+                            <!-- Данные будут добавлены динамически -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="keywordsAnalysis" style="margin-top: 4rem;">
+                    <h3>Анализ ключевых фраз</h3>
+                    <div id="keywordsResults"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('seoAnalyzerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const urls = document.getElementById('urls').value.split('\n').filter(url => url.trim() !== '');
+            const keywords = document.getElementById('keywords').value.split(',').map(kw => kw.trim()).filter(kw => kw !== '');
+            
+            if (urls.length < 2) {
+                showError('Для сравнения нужно минимум 2 URL');
+                return;
+            }
+            
+            if (keywords.length === 0) {
+                showError('Введите хотя бы одну ключевую фразу');
+                return;
+            }
+            
+            // Показываем прелоадер
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            try {
+                const response = await fetch('https://seoparse.netlify.app/.netlify/functions/seo-analyzer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        urls: urls,
+                        keywords: keywords
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка при анализе страниц');
+                }
+                
+                const data = await response.json();
+                displayResults(data, urls, keywords);
+                
+            } catch (error) {
+                showError('Произошла ошибка: ' + error.message);
+            } finally {
+                // Скрываем прелоадер
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        });
+        
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        function displayResults(data, urls, keywords) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const urlsContainer = document.getElementById('urlsContainer');
+            const comparisonResults = document.getElementById('comparisonResults');
+            const keywordsResults = document.getElementById('keywordsResults');
+            
+            // Показываем контейнер с результатами
+            resultsContainer.style.display = 'block';
+            
+            // Отображаем анализируемые URL
+            urlsContainer.innerHTML = '<p>Анализированные страницы:</p>' + 
+                urls.map(url => `<span class="url-badge">${url}</span>`).join('');
+            
+            // Создаем таблицу сравнения
+            comparisonResults.innerHTML = '';
+            
+            // Добавляем заголовки колонок
+            const headerRow = document.querySelector('.comparison-table thead tr');
+            headerRow.innerHTML = '<th>Параметр</th>' + urls.map(url => `<th>${new URL(url).hostname}</th>`).join('');
+            
+            // Функция для добавления строки в таблицу
+            const addRow = (label, values, isMetric = false) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${label}</td>` + 
+                    values.map(val => `<td>${isMetric ? `<span class="metric-value">${val}</span>` : val}</td>`).join('');
+                comparisonResults.appendChild(row);
+            };
+            
+            // Добавляем данные в таблицу
+            addRow('Title', data.map(page => page.title || '—'));
+            addRow('Description', data.map(page => page.meta.description || '—'));
+            addRow('H1', data.map(page => page.headings.h1.join(' | ') || '—'));
+            addRow('H2', data.map(page => page.headings.h2.length));
+            addRow('Изображения (без alt)', data.map(page => page.images.withoutAlt));
+            addRow('Длина контента (симв.)', data.map(page => page.contentLength));
+            
+            // Анализ ключевых фраз
+            keywordsResults.innerHTML = '';
+            
+            keywords.forEach(keyword => {
+                const keywordContainer = document.createElement('div');
+                keywordContainer.style.marginBottom = '3rem';
+                keywordContainer.innerHTML = `<h4>Фраза: "${keyword}"</h4>`;
+                
+                const keywordTable = document.createElement('table');
+                keywordTable.className = 'comparison-table';
+                keywordTable.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Страница</th>
+                            <th>Точные вхождения</th>
+                            <th>Неточные вхождения</th>
+                            <th>Плотность</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map((page, i) => `
+                            <tr>
+                                <td>${new URL(urls[i]).hostname}</td>
+                                <td class="metric-value">${page.keywordAnalysis[keyword]?.exactMatches || 0}</td>
+                                <td class="metric-value">${page.keywordAnalysis[keyword]?.partialMatches || 0}</td>
+                                <td class="metric-value">${page.keywordAnalysis[keyword]?.density ? page.keywordAnalysis[keyword].density.toFixed(2) + '%' : '—'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                `;
+                
+                keywordContainer.appendChild(keywordTable);
+                keywordsResults.appendChild(keywordContainer);
+            });
+            
+            // Прокручиваем к результатам
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
