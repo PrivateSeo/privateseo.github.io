@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<script>
+  // URL вашей Netlify-функции
+  const API_URL = 'https://seoparse.netlify.app/.netlify/functions/hello';
+
+  // Запрашиваем данные и выводим приветствие
+  fetch(API_URL)
+    .then(response => response.json())
+    .then(data => {
+      const greetingElement = document.createElement('div');
+      greetingElement.textContent = data.message; 
+      greetingElement.style.fontWeight = 'bold';
+      document.body.prepend(greetingElement); // Добавляем в начало страницы
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+    });
+</script>	
+</body>
+</html>
