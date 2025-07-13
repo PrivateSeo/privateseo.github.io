@@ -2,19 +2,15 @@ const fetch = require('node-fetch');
 const whois = require('whois-json');
 
 exports.handler = async (event) => {
-  // Разрешаем CORS для всех запросов
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Content-Type': 'application/json'
-  };
-
-  // Обработка preflight запроса
+  // Разрешаем CORS для preflight-запросов (OPTIONS)
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 204,
-      headers,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://privseo.ru',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
       body: ''
     };
   }
@@ -56,7 +52,7 @@ exports.handler = async (event) => {
           const pageSpeedData = await getPageSpeedData(url);
           
           // Получаем социальные шаринги
-          const socialShares = getSocialShares(url);
+          const socialShares = await getSocialShares(url);
           
           return {
             url,
@@ -93,17 +89,20 @@ exports.handler = async (event) => {
             socialShares: null
           };
         }
-      });
+      }));
 
       return {
         statusCode: 200,
-        headers,
-        body: JSON.stringify(analysis)
+        body: JSON.stringify(analysis),
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'https://privseo.ru',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
       };
     } catch (error) {
       return { 
-        statusCode: 500,
-        headers,
+        statusCode: 500, 
         body: JSON.stringify({ error: 'Ошибка сервера', details: error.message }) 
       };
     }
@@ -111,7 +110,6 @@ exports.handler = async (event) => {
 
   return {
     statusCode: 405,
-    headers,
     body: JSON.stringify({ error: 'Метод не поддерживается' })
   };
 };
