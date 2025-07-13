@@ -49,22 +49,17 @@ exports.handler = async (event) => {
           let exactCount = 0;
           let partialCount = 0;
           
-if (keyword && keyword.trim() !== '') {
-    const keywordLower = keyword.toLowerCase();
-    const textLower = cleanHtml.toLowerCase();
-    
-    // Точное вхождение (учитываем словоформы)
-    const regexExact = new RegExp(`(^|\\s)${escapeRegExp(keywordLower)}(\\s|$)`, 'gi');
-    exactCount = (cleanHtml.match(regexExact) || []).length;
-    
-    // Неточное вхождение (подстрока)
-    partialCount = (textLower.match(new RegExp(escapeRegExp(keywordLower), 'gi')) || []).length;
-}
-
-// Добавьте эту функцию в начало файла
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+          if (keyword && keyword.trim() !== '') {
+            const keywordLower = keyword.toLowerCase();
+            const textLower = cleanHtml.toLowerCase();
+            
+            // Точное вхождение (учитываем словоформы)
+            const regexExact = new RegExp(`\\b${keywordLower}\\b`, 'gi');
+            exactCount = (cleanHtml.match(regexExact) || []).length;
+            
+            // Неточное вхождение (подстрока)
+            partialCount = textLower.split(keywordLower).length - 1;
+          }
           
           return {
             url,
