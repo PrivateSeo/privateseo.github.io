@@ -1,647 +1,161 @@
-<!-- seo-parse.html -->
-<!doctype html>
-<html lang="ru">
-<head>
-	<meta charset="UTF-8">
-	<title>SEO Анализатор страниц</title>
-  <link rel="stylesheet" href="css/main.css">
-  <style>
-    /* Дополнительные стили для анализатора */
-    .seo-analysis {
-      margin-top: 4rem;
-      background-color: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      padding: 3rem;
-    }
-    
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 2rem;
-      font-size: 1.4rem;
-    }
-    
-    .results-table th, 
-    .results-table td {
-      padding: 1.2rem 1.5rem;
-      text-align: left;
-      border-bottom: 1px solid var(--gray-light);
-    }
-    
-    .results-table th {
-      background-color: var(--light-color);
-      font-weight: 600;
-      color: var(--dark-color);
-    }
-    
-    .results-table tr:hover td {
-      background-color: rgba(67, 97, 238, 0.05);
-    }
-    
-    .url-cell {
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    
-    .keyword-stats {
-      display: flex;
-      gap: 1rem;
-    }
-    
-    .keyword-stat {
-      padding: 0.5rem 1rem;
-      border-radius: var(--border-radius);
-      background-color: rgba(67, 97, 238, 0.1);
-      color: var(--primary-color);
-      font-weight: 500;
-    }
-    
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(255, 255, 255, 0.8);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      display: none;
-    }
-    
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid var(--gray-light);
-      border-top-color: var(--primary-color);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 2rem;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .comparison-chart {
-      margin-top: 3rem;
-      background-color: white;
-      padding: 2rem;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-    }
-    
-    .chart-container {
-      height: 400px;
-      margin-top: 2rem;
-    }
-    
-    .error-message {
-      color: var(--danger-color);
-      background-color: rgba(239, 35, 60, 0.1);
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      margin-top: 1rem;
-    }
-    
-    .success-message {
-      color: var(--success-color);
-      background-color: rgba(76, 201, 240, 0.1);
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      margin-top: 1rem;
-    }
-    
-    .details-toggle {
-      color: var(--primary-color);
-      cursor: pointer;
-      font-size: 1.3rem;
-      margin-top: 0.5rem;
-      display: inline-block;
-    }
-    
-    .details-content {
-      display: none;
-      margin-top: 1rem;
-      padding: 1rem;
-      background-color: var(--light-color);
-      border-radius: var(--border-radius);
-    }
-    
-    .tag {
-      display: inline-block;
-      padding: 0.3rem 0.8rem;
-      background-color: rgba(67, 97, 238, 0.1);
-      color: var(--primary-color);
-      border-radius: 1rem;
-      font-size: 1.2rem;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
+exports.handler = async (event) => {
+  // Разрешаем CORS для preflight-запросов (OPTIONS)
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://privseo.ru',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
+      body: ''
+    };
+  }
 
-    /* Новые стили для дополнительных функций */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-    
-    .metric-card {
-      background-color: white;
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--box-shadow);
-      text-align: center;
-    }
-    
-    .metric-value {
-      font-size: 2.4rem;
-      font-weight: 600;
-      margin: 0.5rem 0;
-    }
-    
-    .metric-label {
-      font-size: 1.2rem;
-      color: var(--gray-dark);
-    }
-    
-    .good {
-      color: var(--success-color);
-    }
-    
-    .medium {
-      color: var(--warning-color);
-    }
-    
-    .bad {
-      color: var(--danger-color);
-    }
-    
-    .og-tags {
-      margin-top: 1rem;
-    }
-    
-    .og-tag {
-      display: flex;
-      margin-bottom: 0.5rem;
-    }
-    
-    .og-tag-label {
-      font-weight: 600;
-      min-width: 100px;
-    }
-    
-    .schema-count {
-      display: inline-block;
-      padding: 0.3rem 0.8rem;
-      background-color: rgba(67, 97, 238, 0.1);
-      color: var(--primary-color);
-      border-radius: 1rem;
-      font-size: 1.2rem;
-    }
-  </style>
-</head>
-<body>
-<div id="app" class="container">
-  <h1>SEO Анализатор страниц</h1>
-  <p>Введите URL страниц для анализа (каждый URL с новой строки) и ключевую фразу для проверки</p>
-  
-  <form id="urlForm" class="seo-analysis">
-    <div class="form__group">
-      <textarea name="urls" id="urls" placeholder="Введите URL каждой страницы с новой строки" 
-                class="form__input" rows="5" required></textarea>
-      <label for="urls" class="form__label">URL страниц</label>
-    </div>
-    
-    <div class="form__group">
-      <input type="text" name="keyword" id="keyword" placeholder="Ключевая фраза (необязательно)" 
-             class="form__input">
-      <label for="keyword" class="form__label">Ключевая фраза</label>
-    </div>
-    
-    <button type="submit" class="button button--primary">Анализировать</button>
-    
-    <div id="formMessage" style="display: none;"></div>
-  </form>
-  
-  <div id="results" class="seo-analysis" style="display: none;">
-    <h2>Результаты анализа</h2>
-    <div id="resultsContent"></div>
-  </div>
-</div>
-
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="spinner"></div>
-  <p>Идет анализ страниц, пожалуйста подождите...</p>
-  <p id="progressText">Обрабатывается: 0 из 0</p>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  document.getElementById('urlForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const urlsInput = e.target.urls.value;
-    const keyword = e.target.keyword.value;
-    
-    // Проверка на пустые URL
-    const urls = urlsInput.split('\n')
-      .map(url => url.trim())
-      .filter(url => url !== '');
-    
-    if (urls.length === 0) {
-      showMessage('Пожалуйста, введите хотя бы один URL', 'error');
-      return;
-    }
-    
-    // Валидация URL
-    const invalidUrls = urls.filter(url => {
-      try {
-        new URL(url.startsWith('http') ? url : `https://${url}`);
-        return false;
-      } catch {
-        return true;
-      }
-    });
-    
-    if (invalidUrls.length > 0) {
-      showMessage(`Некорректные URL: ${invalidUrls.join(', ')}`, 'error');
-      return;
-    }
-    
-    // Показываем прелоадер
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const progressText = document.getElementById('progressText');
-    loadingOverlay.style.display = 'flex';
-    progressText.textContent = `Обрабатывается: 0 из ${urls.length}`;
-    
+  // Основной обработчик POST-запросов
+  if (event.httpMethod === 'POST') {
     try {
-      // Отправляем данные на сервер
-      const response = await fetch('https://seoparse.netlify.app/.netlify/functions/hello', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urls, keyword })
-      });
+      const { urls, keyword } = JSON.parse(event.body);
       
-      if (!response.ok) {
-        throw new Error(`Ошибка сервера: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      // Скрываем прелоадер
-      loadingOverlay.style.display = 'none';
-      
-      // Показываем результаты
-      displayResults(data, keyword);
-      
+      const analysis = await Promise.all(urls.map(async (url) => {
+        try {
+          const res = await fetch(url);
+          const html = await res.text();
+          
+          // Извлечение title
+          const title = html.match(/<title>(.*?)<\/title>/i)?.[1] || 'Не найден';
+          
+          // Извлечение description
+          const descriptionMatch = html.match(/<meta\s+name="description"\s+content="(.*?)"/i);
+          const description = descriptionMatch ? descriptionMatch[1] : 'Не найден';
+          
+          // Извлечение h1 и h2
+          const h1 = html.match(/<h1.*?>(.*?)<\/h1>/i)?.[1] || 'Отсутствует';
+          const h2Tags = [...html.matchAll(/<h2.*?>(.*?)<\/h2>/gi)].map(match => match[1]);
+          
+          // Извлечение alt текстов изображений
+          const altTexts = [...html.matchAll(/<img[^>]+alt="([^"]*)"/gi)].map(match => match[1]);
+          
+          // Подсчет контента (без тегов, скриптов, стилей)
+          const cleanHtml = html
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+          const contentLength = cleanHtml.length;
+          
+          // Подсчет вхождений ключевой фразы
+          let exactCount = 0;
+          let partialCount = 0;
+          
+          if (keyword && keyword.trim() !== '') {
+            const keywordLower = keyword.toLowerCase();
+            const textLower = cleanHtml.toLowerCase();
+            
+            // Точное вхождение (учитываем словоформы)
+            const regexExact = new RegExp(`\\b${keywordLower}\\b`, 'gi');
+            exactCount = (cleanHtml.match(regexExact) || []).length;
+            
+            // Неточное вхождение (подстрока)
+            partialCount = textLower.split(keywordLower).length - 1;
+          }
+
+          // Проверка микроразметки
+          const schemaOrg = [...html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
+            .map(match => match[1])
+            .filter(json => {
+              try {
+                JSON.parse(json);
+                return true;
+              } catch {
+                return false;
+              }
+            }).length;
+
+          // Социальные шаринги
+          const ogTags = {
+            title: html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']*)["']/i)?.[1],
+            description: html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']*)["']/i)?.[1],
+            image: html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']*)["']/i)?.[1]
+          };
+
+          // WHOIS информация (заглушка)
+          const domain = new URL(url).hostname;
+          const whoisInfo = {
+            domain,
+            created: null,
+            expires: null,
+            registrar: null
+          };
+
+          // PageSpeed Insights (заглушка)
+          const pageSpeedInsights = {
+            performance: Math.floor(Math.random() * 100),
+            accessibility: Math.floor(Math.random() * 100),
+            bestPractices: Math.floor(Math.random() * 100),
+            seo: Math.floor(Math.random() * 100)
+          };
+          
+          return {
+            url,
+            status: res.status,
+            title,
+            description,
+            h1,
+            h2: h2Tags,
+            alts: altTexts,
+            contentLength,
+            keywordStats: {
+              exactCount,
+              partialCount
+            },
+            structuredData: {
+              schemaOrgCount: schemaOrg,
+              ogTags
+            },
+            whois: whoisInfo,
+            pageSpeed: pageSpeedInsights,
+            error: null
+          };
+        } catch (error) {
+          return { 
+            url, 
+            error: 'Не удалось загрузить страницу',
+            status: 500,
+            title: null,
+            description: null,
+            h1: null,
+            h2: null,
+            alts: null,
+            contentLength: null,
+            keywordStats: null,
+            structuredData: null,
+            whois: null,
+            pageSpeed: null
+          };
+        }
+      }));
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify(analysis),
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'https://privseo.ru',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      };
     } catch (error) {
-      loadingOverlay.style.display = 'none';
-      showMessage(`Ошибка при анализе: ${error.message}`, 'error');
-      console.error('Ошибка:', error);
+      return { 
+        statusCode: 500, 
+        body: JSON.stringify({ error: 'Ошибка сервера', details: error.message }) 
+      };
     }
-  });
-  
-  function showMessage(text, type) {
-    const messageEl = document.getElementById('formMessage');
-    messageEl.textContent = text;
-    messageEl.className = type === 'error' ? 'error-message' : 'success-message';
-    messageEl.style.display = 'block';
-    
-    setTimeout(() => {
-      messageEl.style.display = 'none';
-    }, 5000);
   }
-  
-  function displayResults(data, keyword) {
-    const resultsContainer = document.getElementById('results');
-    const resultsContent = document.getElementById('resultsContent');
-    
-    resultsContainer.style.display = 'block';
-    resultsContent.innerHTML = '';
-    
-    if (!Array.isArray(data)) {
-      resultsContent.innerHTML = `<div class="error-message">Ошибка: получены некорректные данные</div>`;
-      return;
-    }
-    
-    // Создаем таблицу с основными результатами
-    let html = `
-      <div class="table-responsive">
-        <table class="results-table">
-          <thead>
-            <tr>
-              <th>URL</th>
-              <th>Статус</th>
-              <th>Title</th>
-              <th>H1</th>
-              ${keyword ? `<th>Ключевая фраза</th>` : ''}
-              <th>Контент</th>
-              <th>Детали</th>
-            </tr>
-          </thead>
-          <tbody>
-    `;
-    
-    data.forEach((item, index) => {
-      const isError = item.error || item.status >= 400;
-      
-      html += `
-        <tr class="${isError ? 'error-row' : ''}">
-          <td class="url-cell" title="${item.url}">${item.url}</td>
-          <td>${isError ? 'Ошибка' : item.status}</td>
-          <td>${isError ? '-' : truncate(item.title, 30)}</td>
-          <td>${isError ? '-' : truncate(item.h1, 20)}</td>
-          ${keyword ? `
-            <td>
-              ${isError ? '-' : `
-                <div class="keyword-stats">
-                  <span class="keyword-stat" title="Точные вхождения">${item.keywordStats.exactCount}</span>
-                  <span class="keyword-stat" title="Неточные вхождения">${item.keywordStats.partialCount}</span>
-                </div>
-              `}
-            </td>
-          ` : ''}
-          <td>${isError ? '-' : formatContentLength(item.contentLength)}</td>
-          <td>
-            <a href="#" class="details-toggle" data-index="${index}">Показать</a>
-            <div class="details-content" id="details-${index}">
-              ${isError ? `
-                <div class="error-message">${item.error || 'Ошибка при анализе страницы'}</div>
-              ` : `
-                <p><strong>Description:</strong> ${truncate(item.description, 100)}</p>
-                <p><strong>H2 заголовки:</strong> ${item.h2.length}</p>
-                <p><strong>Alt тексты:</strong> ${item.alts.length}</p>
-                
-                <h3 style="margin-top: 1.5rem;">Микроразметка</h3>
-                <p><strong>Schema.org:</strong> <span class="schema-count">${item.structuredData.schemaOrgCount} элементов</span></p>
-                
-                <h3 style="margin-top: 1.5rem;">Социальные мета-теги</h3>
-                <div class="og-tags">
-                  <div class="og-tag">
-                    <span class="og-tag-label">og:title:</span>
-                    <span>${item.structuredData.ogTags.title || 'Не указан'}</span>
-                  </div>
-                  <div class="og-tag">
-                    <span class="og-tag-label">og:description:</span>
-                    <span>${item.structuredData.ogTags.description || 'Не указан'}</span>
-                  </div>
-                  <div class="og-tag">
-                    <span class="og-tag-label">og:image:</span>
-                    <span>${item.structuredData.ogTags.image ? truncate(item.structuredData.ogTags.image, 50) : 'Не указан'}</span>
-                  </div>
-                </div>
-                
-                <h3 style="margin-top: 1.5rem;">PageSpeed Insights</h3>
-                <div class="metrics-grid">
-                  <div class="metric-card">
-                    <div class="metric-value ${getScoreClass(item.pageSpeed.performance)}">${item.pageSpeed.performance}</div>
-                    <div class="metric-label">Производительность</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-value ${getScoreClass(item.pageSpeed.accessibility)}">${item.pageSpeed.accessibility}</div>
-                    <div class="metric-label">Доступность</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-value ${getScoreClass(item.pageSpeed.bestPractices)}">${item.pageSpeed.bestPractices}</div>
-                    <div class="metric-label">Best Practices</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="metric-value ${getScoreClass(item.pageSpeed.seo)}">${item.pageSpeed.seo}</div>
-                    <div class="metric-label">SEO</div>
-                  </div>
-                </div>
-                
-                <h3 style="margin-top: 1.5rem;">WHOIS информация</h3>
-                <p>Домен: ${item.whois.domain}</p>
-                <p>Регистратор: ${item.whois.registrar || 'Неизвестно'}</p>
-                <p>Дата создания: ${item.whois.created || 'Неизвестно'}</p>
-                <p>Дата истечения: ${item.whois.expires || 'Неизвестно'}</p>
-                
-                ${item.h2.length > 0 ? `
-                  <p><strong>H2:</strong></p>
-                  <ul>
-                    ${item.h2.map(h2 => `<li>${truncate(h2, 50)}</li>`).join('')}
-                  </ul>
-                ` : ''}
-                ${item.alts.length > 0 ? `
-                  <p><strong>Alt тексты:</strong></p>
-                  <div>
-                    ${item.alts.filter(alt => alt).map(alt => `<span class="tag">${truncate(alt, 20)}</span>`).join('')}
-                  </div>
-                ` : ''}
-              `}
-            </div>
-          </td>
-        </tr>
-      `;
-    });
-    
-    html += `
-          </tbody>
-        </table>
-      </div>
-    `;
-    
-    // Добавляем графики сравнения, если есть ключевая фраза и более одной страницы
-    if (keyword && data.length > 1 && data.every(item => !item.error)) {
-      html += createComparisonCharts(data, keyword);
-    }
-    
-    resultsContent.innerHTML = html;
-    
-    // Добавляем обработчики для раскрытия деталей
-    document.querySelectorAll('.details-toggle').forEach(toggle => {
-      toggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        const index = this.getAttribute('data-index');
-        const details = document.getElementById(`details-${index}`);
-        
-        if (details.style.display === 'block') {
-          details.style.display = 'none';
-          this.textContent = 'Показать';
-        } else {
-          details.style.display = 'block';
-          this.textContent = 'Скрыть';
-        }
-      });
-    });
-  }
-  
-  function getScoreClass(score) {
-    if (score >= 90) return 'good';
-    if (score >= 50) return 'medium';
-    return 'bad';
-  }
-  
-  function truncate(text, maxLength) {
-    if (!text) return '-';
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-  }
-  
-  function formatContentLength(length) {
-    if (!length) return '0 симв.';
-    return length > 1000 ? `${Math.round(length / 1000)} тыс. симв.` : `${length} симв.`;
-  }
-  
-  function createComparisonCharts(data, keyword) {
-    const validData = data.filter(item => !item.error);
-    
-    let html = `
-      <div class="comparison-chart">
-        <h3>Сравнительный анализ по ключевой фразе: "${keyword}"</h3>
-        <div class="chart-container">
-          <canvas id="keywordChart"></canvas>
-        </div>
-      </div>
-      
-      <div class="comparison-chart">
-        <h3>Сравнение длины контента</h3>
-        <div class="chart-container">
-          <canvas id="contentChart"></canvas>
-        </div>
-      </div>
 
-      <div class="comparison-chart">
-        <h3>Сравнение PageSpeed Insights</h3>
-        <div class="chart-container">
-          <canvas id="pageSpeedChart"></canvas>
-        </div>
-      </div>
-    `;
-    
-    // Откладываем создание графиков до отрисовки HTML
-    setTimeout(() => {
-      // График по ключевым фразам
-      const keywordCtx = document.getElementById('keywordChart').getContext('2d');
-      new Chart(keywordCtx, {
-        type: 'bar',
-        data: {
-          labels: validData.map(item => new URL(item.url).hostname),
-          datasets: [
-            {
-              label: 'Точные вхождения',
-              data: validData.map(item => item.keywordStats.exactCount),
-              backgroundColor: 'rgba(67, 97, 238, 0.7)',
-              borderColor: 'rgba(67, 97, 238, 1)',
-              borderWidth: 1
-            },
-            {
-              label: 'Неточные вхождения',
-              data: validData.map(item => item.keywordStats.partialCount),
-              backgroundColor: 'rgba(114, 9, 183, 0.7)',
-              borderColor: 'rgba(114, 9, 183, 1)',
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Количество вхождений'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Сайты'
-              }
-            }
-          }
-        }
-      });
-      
-      // График по длине контента
-      const contentCtx = document.getElementById('contentChart').getContext('2d');
-      new Chart(contentCtx, {
-        type: 'bar',
-        data: {
-          labels: validData.map(item => new URL(item.url).hostname),
-          datasets: [{
-            label: 'Длина контента (символы)',
-            data: validData.map(item => item.contentLength),
-            backgroundColor: 'rgba(76, 201, 240, 0.7)',
-            borderColor: 'rgba(76, 201, 240, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Количество символов'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Сайты'
-              }
-            }
-          }
-        }
-      });
-
-      // График PageSpeed Insights
-      const pageSpeedCtx = document.getElementById('pageSpeedChart').getContext('2d');
-      new Chart(pageSpeedCtx, {
-        type: 'radar',
-        data: {
-          labels: ['Производительность', 'Доступность', 'Best Practices', 'SEO'],
-          datasets: validData.map(item => ({
-            label: new URL(item.url).hostname,
-            data: [
-              item.pageSpeed.performance,
-              item.pageSpeed.accessibility,
-              item.pageSpeed.bestPractices,
-              item.pageSpeed.seo
-            ],
-            backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.2)`,
-            borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`,
-            borderWidth: 1
-          }))
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            r: {
-              angleLines: {
-                display: true
-              },
-              suggestedMin: 0,
-              suggestedMax: 100
-            }
-          }
-        }
-      });
-    }, 100);
-    
-    return html;
-  }
-  
-  // Обновление прогресса (если нужно)
-  function updateProgress(current, total) {
-    const progressText = document.getElementById('progressText');
-    if (progressText) {
-      progressText.textContent = `Обрабатывается: ${current} из ${total}`;
-    }
-  }
-</script>
-</body>
-</html>
+  return {
+    statusCode: 405,
+    body: JSON.stringify({ error: 'Метод не поддерживается' })
+  };
+};
