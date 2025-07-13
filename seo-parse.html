@@ -1,3 +1,4 @@
+<!-- seo-parse.html -->
 <!doctype html>
 <html lang="ru">
 <head>
@@ -5,6 +6,7 @@
 	<title>SEO Анализатор страниц</title>
   <link rel="stylesheet" href="css/main.css">
   <style>
+    /* Дополнительные стили для анализатора */
     .seo-analysis {
       margin-top: 4rem;
       background-color: white;
@@ -142,7 +144,7 @@
       margin-bottom: 0.5rem;
     }
 
-    /* Новые стили для PageSpeed, WHOIS и микроразметки */
+    /* Новые стили для дополнительных функций */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -169,13 +171,31 @@
       color: var(--gray-dark);
     }
     
-    .good { color: var(--success-color); }
-    .medium { color: var(--warning-color); }
-    .bad { color: var(--danger-color); }
+    .good {
+      color: var(--success-color);
+    }
     
-    .og-tags { margin-top: 1rem; }
-    .og-tag { display: flex; margin-bottom: 0.5rem; }
-    .og-tag-label { font-weight: 600; min-width: 100px; }
+    .medium {
+      color: var(--warning-color);
+    }
+    
+    .bad {
+      color: var(--danger-color);
+    }
+    
+    .og-tags {
+      margin-top: 1rem;
+    }
+    
+    .og-tag {
+      display: flex;
+      margin-bottom: 0.5rem;
+    }
+    
+    .og-tag-label {
+      font-weight: 600;
+      min-width: 100px;
+    }
     
     .schema-count {
       display: inline-block;
@@ -262,7 +282,7 @@
     progressText.textContent = `Обрабатывается: 0 из ${urls.length}`;
     
     try {
-      // Ваш реальный URL API (уже вставлен)
+      // Отправляем данные на сервер
       const response = await fetch('https://seoparse.netlify.app/.netlify/functions/hello', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -311,6 +331,7 @@
       return;
     }
     
+    // Создаем таблицу с основными результатами
     let html = `
       <div class="table-responsive">
         <table class="results-table">
@@ -428,12 +449,14 @@
       </div>
     `;
     
+    // Добавляем графики сравнения, если есть ключевая фраза и более одной страницы
     if (keyword && data.length > 1 && data.every(item => !item.error)) {
       html += createComparisonCharts(data, keyword);
     }
     
     resultsContent.innerHTML = html;
     
+    // Добавляем обработчики для раскрытия деталей
     document.querySelectorAll('.details-toggle').forEach(toggle => {
       toggle.addEventListener('click', function(e) {
         e.preventDefault();
@@ -493,7 +516,9 @@
       </div>
     `;
     
+    // Откладываем создание графиков до отрисовки HTML
     setTimeout(() => {
+      // График по ключевым фразам
       const keywordCtx = document.getElementById('keywordChart').getContext('2d');
       new Chart(keywordCtx, {
         type: 'bar',
@@ -537,6 +562,7 @@
         }
       });
       
+      // График по длине контента
       const contentCtx = document.getElementById('contentChart').getContext('2d');
       new Chart(contentCtx, {
         type: 'bar',
@@ -571,6 +597,7 @@
         }
       });
 
+      // График PageSpeed Insights
       const pageSpeedCtx = document.getElementById('pageSpeedChart').getContext('2d');
       new Chart(pageSpeedCtx, {
         type: 'radar',
@@ -608,6 +635,7 @@
     return html;
   }
   
+  // Обновление прогресса (если нужно)
   function updateProgress(current, total) {
     const progressText = document.getElementById('progressText');
     if (progressText) {
