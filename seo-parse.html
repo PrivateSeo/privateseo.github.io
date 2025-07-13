@@ -142,6 +142,62 @@
       margin-right: 0.5rem;
       margin-bottom: 0.5rem;
     }
+    
+    /* Новые стили для дополнительных данных */
+    .metric-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .metric-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--dark-color);
+    }
+    
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .metric-label {
+      font-size: 1.2rem;
+      color: var(--gray-dark);
+    }
+    
+    .schema-type {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background-color: rgba(114, 9, 183, 0.1);
+      color: var(--secondary-color);
+      border-radius: 1rem;
+      font-size: 1.2rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .social-share-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background-color: rgba(247, 37, 133, 0.1);
+      color: var(--accent-color);
+      border-radius: 1rem;
+      font-size: 1.2rem;
+      margin-right: 0.5rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .social-share-link:hover {
+      background-color: var(--accent-color);
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -312,19 +368,42 @@
               ${isError ? `
                 <div class="error-message">${item.error || 'Ошибка при анализе страницы'}</div>
               ` : `
-                <p><strong>Description:</strong> ${truncate(item.description, 100)}</p>
-                <p><strong>H2 заголовки:</strong> ${item.h2.length}</p>
-                <p><strong>Alt тексты:</strong> ${item.alts.length}</p>
+                <div class="metric-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                  ${renderMetricCard('Description', truncate(item.description, 100))}
+                  ${renderMetricCard('H2 заголовки', item.h2.length)}
+                  ${renderMetricCard('Alt тексты', item.alts.length)}
+                  ${item.schemaTypes ? renderMetricCard('Микроразметка', item.schemaTypes.map(type => `<span class="schema-type">${type}</span>`).join('')) : ''}
+                  ${item.pageSpeed ? renderMetricCard('Скорость загрузки', `${item.pageSpeed.performanceScore.toFixed(0)}/100`) : ''}
+                  ${item.whois ? renderMetricCard('Возраст домена', item.whois.domainAge ? `${item.whois.domainAge.toFixed(1)} лет` : 'Неизвестно') : ''}
+                </div>
+                
                 ${item.h2.length > 0 ? `
                   <p><strong>H2:</strong></p>
                   <ul>
                     ${item.h2.map(h2 => `<li>${truncate(h2, 50)}</li>`).join('')}
                   </ul>
                 ` : ''}
+                
                 ${item.alts.length > 0 ? `
                   <p><strong>Alt тексты:</strong></p>
                   <div>
                     ${item.alts.filter(alt => alt).map(alt => `<span class="tag">${truncate(alt, 20)}</span>`).join('')}
+                  </div>
+                ` : ''}
+                
+                ${item.pageSpeed ? `
+                  <p><strong>Рекомендации по скорости:</strong></p>
+                  <ul>
+                    ${item.pageSpeed.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                  </ul>
+                ` : ''}
+                
+                ${item.socialShares ? `
+                  <p><strong>Поделиться:</strong></p>
+                  <div>
+                    <a href="${item.socialShares.facebook}" target="_blank" class="social-share-link">Facebook</a>
+                    <a href="${item.socialShares.twitter}" target="_blank" class="social-share-link">Twitter</a>
+                    <a href="${item.socialShares.vk}" target="_blank" class="social-share-link">VK</a>
                   </div>
                 ` : ''}
               `}
@@ -365,6 +444,15 @@
     });
   }
   
+  function renderMetricCard(title, value) {
+    return `
+      <div class="metric-card">
+        <div class="metric-title">${title}</div>
+        <div class="metric-value">${value}</div>
+      </div>
+    `;
+  }
+  
   function truncate(text, maxLength) {
     if (!text) return '-';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
@@ -392,88 +480,185 @@
           <canvas id="contentChart"></canvas>
         </div>
       </div>
+      
+      ${validData[0].pageSpeed ? `
+        <div class="comparison-chart">
+          <h3>Сравнение скорости загрузки</h3>
+          <div class="chart-container">
+            <canvas id="speedChart"></canvas>
+          </div>
+        </div>
+      ` : ''}
+      
+      ${validData[0].whois?.domainAge ? `
+        <div class="comparison-chart">
+          <h3>Сравнение возраста доменов</h3>
+          <div class="chart-container">
+            <canvas id="domainAgeChart"></canvas>
+          </div>
+        </div>
+      ` : ''}
     `;
     
     // Откладываем создание графиков до отрисовки HTML
     setTimeout(() => {
       // График по ключевым фразам
-      const keywordCtx = document.getElementById('keywordChart').getContext('2d');
-      new Chart(keywordCtx, {
-        type: 'bar',
-        data: {
-          labels: validData.map(item => new URL(item.url).hostname),
-          datasets: [
-            {
-              label: 'Точные вхождения',
-              data: validData.map(item => item.keywordStats.exactCount),
-              backgroundColor: 'rgba(67, 97, 238, 0.7)',
-              borderColor: 'rgba(67, 97, 238, 1)',
-              borderWidth: 1
-            },
-            {
-              label: 'Неточные вхождения',
-              data: validData.map(item => item.keywordStats.partialCount),
-              backgroundColor: 'rgba(114, 9, 183, 0.7)',
-              borderColor: 'rgba(114, 9, 183, 1)',
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Количество вхождений'
+      const keywordCtx = document.getElementById('keywordChart')?.getContext('2d');
+      if (keywordCtx) {
+        new Chart(keywordCtx, {
+          type: 'bar',
+          data: {
+            labels: validData.map(item => new URL(item.url).hostname),
+            datasets: [
+              {
+                label: 'Точные вхождения',
+                data: validData.map(item => item.keywordStats.exactCount),
+                backgroundColor: 'rgba(67, 97, 238, 0.7)',
+                borderColor: 'rgba(67, 97, 238, 1)',
+                borderWidth: 1
+              },
+              {
+                label: 'Неточные вхождения',
+                data: validData.map(item => item.keywordStats.partialCount),
+                backgroundColor: 'rgba(114, 9, 183, 0.7)',
+                borderColor: 'rgba(114, 9, 183, 1)',
+                borderWidth: 1
               }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Сайты'
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Количество вхождений'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Сайты'
+                }
               }
             }
           }
-        }
-      });
+        });
+      }
       
       // График по длине контента
-      const contentCtx = document.getElementById('contentChart').getContext('2d');
-      new Chart(contentCtx, {
-        type: 'bar',
-        data: {
-          labels: validData.map(item => new URL(item.url).hostname),
-          datasets: [{
-            label: 'Длина контента (символы)',
-            data: validData.map(item => item.contentLength),
-            backgroundColor: 'rgba(76, 201, 240, 0.7)',
-            borderColor: 'rgba(76, 201, 240, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Количество символов'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Сайты'
+      const contentCtx = document.getElementById('contentChart')?.getContext('2d');
+      if (contentCtx) {
+        new Chart(contentCtx, {
+          type: 'bar',
+          data: {
+            labels: validData.map(item => new URL(item.url).hostname),
+            datasets: [{
+              label: 'Длина контента (символы)',
+              data: validData.map(item => item.contentLength),
+              backgroundColor: 'rgba(76, 201, 240, 0.7)',
+              borderColor: 'rgba(76, 201, 240, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Количество символов'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Сайты'
+                }
               }
             }
           }
-        }
-      });
+        });
+      }
+      
+      // График скорости загрузки
+      const speedCtx = document.getElementById('speedChart')?.getContext('2d');
+      if (speedCtx) {
+        new Chart(speedCtx, {
+          type: 'bar',
+          data: {
+            labels: validData.map(item => new URL(item.url).hostname),
+            datasets: [{
+              label: 'Оценка скорости (0-100)',
+              data: validData.map(item => item.pageSpeed?.performanceScore || 0),
+              backgroundColor: 'rgba(247, 37, 133, 0.7)',
+              borderColor: 'rgba(247, 37, 133, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                  display: true,
+                  text: 'Оценка скорости'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Сайты'
+                }
+              }
+            }
+          }
+        });
+      }
+      
+      // График возраста доменов
+      const domainAgeCtx = document.getElementById('domainAgeChart')?.getContext('2d');
+      if (domainAgeCtx) {
+        new Chart(domainAgeCtx, {
+          type: 'bar',
+          data: {
+            labels: validData.map(item => new URL(item.url).hostname),
+            datasets: [{
+              label: 'Возраст домена (лет)',
+              data: validData.map(item => item.whois?.domainAge || 0),
+              backgroundColor: 'rgba(248, 150, 30, 0.7)',
+              borderColor: 'rgba(248, 150, 30, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Возраст (лет)'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Сайты'
+                }
+              }
+            }
+          }
+        });
+      }
     }, 100);
     
     return html;
