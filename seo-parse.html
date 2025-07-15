@@ -68,10 +68,10 @@ description: Сравните свою страницу со страницам�
     }
     
     .result-meta {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1rem;
+		margin-bottom: 1rem;
+		display: flex;
+		gap: 20px;
+		justify-content: space-between;
     }
     
     .meta-item {
@@ -241,7 +241,7 @@ description: Сравните свою страницу со страницам�
     
     @media (max-width: 768px) {
       .result-meta {
-        grid-template-columns: 1fr;
+        flex-flow: column;
       }
       
       .seo-analysis {
