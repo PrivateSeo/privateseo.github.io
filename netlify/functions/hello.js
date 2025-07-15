@@ -54,7 +54,7 @@ exports.handler = async (event) => {
             const textLower = cleanHtml.toLowerCase();
             
             // Точное вхождение (учитываем словоформы)
-            const regexExact = new RegExp(`\\b${keywordLower}\\b`, 'gi');
+            const regexExact = new RegExp(`(^|\\s)${keywordLower}(\\s|$)`, 'gi');
             exactCount = (cleanHtml.match(regexExact) || []).length;
             
             // Неточное вхождение (подстрока)
