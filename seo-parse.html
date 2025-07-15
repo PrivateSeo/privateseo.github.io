@@ -207,6 +207,58 @@ description: Сравните свою страницу со страницам�
         padding: 1.5rem;
       }
     }
+
+.seo-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.metric-card {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.metric-title {
+  font-size: 1.4rem;
+  color: var(--gray-dark);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metric-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+.metric-good {
+  color: var(--success-color);
+}
+
+.metric-bad {
+  color: var(--danger-color);
+}
+
+.metric-warning {
+  color: var(--warning-color);
+}
+
+.metric-icon {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+  .seo-metrics {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 
 <section class="hero" id="hero">
@@ -406,6 +458,65 @@ description: Сравните свою страницу со страницам�
           </div>
         `}
       `;
+
+    if (!isError) {
+      // Добавляем новые метрики
+      resultCard.innerHTML += `
+        <div class="seo-metrics">
+          <!-- Анализ URL -->
+          <div class="metric-card">
+            <div class="metric-title">
+              <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              Анализ URL
+            </div>
+            <div class="metric-value ${item.urlAnalysis.length > 60 ? 'metric-bad' : 'metric-good'}">
+              ${item.urlAnalysis.length} симв.
+            </div>
+            <div style="margin-top: 0.5rem; font-size: 1.3rem; color: var(--gray-dark);">
+              ${item.urlAnalysis.isDynamic ? '❌ Динамический URL' : '✅ ЧПУ URL'}<br>
+              ${item.urlAnalysis.hasKeyword ? '✅ Ключевое слово есть' : '❌ Ключевого слова нет'}
+            </div>
+          </div>
+
+          <!-- Скорость загрузки -->
+          <div class="metric-card">
+            <div class="metric-title">
+              <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Скорость загрузки
+            </div>
+            <div class="metric-value ${item.loadTime > 2000 ? 'metric-bad' : item.loadTime > 1000 ? 'metric-warning' : 'metric-good'}">
+              ${item.loadTime} мс
+            </div>
+            <div style="margin-top: 0.5rem; font-size: 1.3rem; color: var(--gray-dark);">
+              ${item.loadTime > 2000 ? '⚠️ Требуется оптимизация' : '✅ В норме'}
+            </div>
+          </div>
+
+          <!-- Анализ контента -->
+          <div class="metric-card">
+            <div class="metric-title">
+              <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Контент
+            </div>
+            <div class="metric-value ${item.contentAnalysis.length < 1500 ? 'metric-bad' : item.contentAnalysis.length < 2500 ? 'metric-warning' : 'metric-good'}">
+              ${item.contentAnalysis.length} симв.
+            </div>
+            <div style="margin-top: 0.5rem; font-size: 1.3rem; color: var(--gray-dark);">
+              Соотношение текст/код: ${item.contentAnalysis.textToCodeRatio}%<br>
+              ${item.contentAnalysis.length < 1500 ? '❌ Мало текста' : '✅ Достаточно текста'}
+            </div>
+          </div>
+        </div>
+      `;
+    }
       
       resultsContent.appendChild(resultCard);
       
