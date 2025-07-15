@@ -22,6 +22,8 @@ description: Сравните свою страницу со страницам�
       gap: 1.5rem;
       margin-top: 2rem;
     }
+
+
     
     .result-card {
       background-color: white;
@@ -90,8 +92,14 @@ description: Сравните свою страницу со страницам�
     .meta-value {
       font-weight: 500;
       color: var(--dark-color);
+	  position:relative;
     }
-    
+	
+    .meta-value:before{
+      content:attr(title);
+      position:absolute;
+    }
+	
     .keyword-stats {
       display: flex;
       gap: 0.5rem;
