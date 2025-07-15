@@ -1,29 +1,30 @@
 ---
 layout: default
-title: SEO Анализатор
-description: Анализ SEO-параметров страниц
+title: SEO Анализатор страниц
+description: Анализ SEO-параметров с новыми метриками
 ---
 
 <style>
-  /* Стили для новых метрик */
+  /* Существующие стили остаются без изменений */
+  /* Добавляем только новые стили для метрик */
   .seo-metrics {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
-    margin-top: 2rem;
+    margin: 2rem 0;
   }
 
   .metric-card {
     background: white;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     padding: 1.5rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border-left: 3px solid #4361ee;
+    box-shadow: var(--box-shadow);
+    border-left: 3px solid var(--primary-color);
   }
 
   .metric-title {
     font-size: 1.4rem;
-    color: #495057;
+    color: var(--gray-dark);
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -33,12 +34,12 @@ description: Анализ SEO-параметров страниц
   .metric-value {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #14213d;
+    color: var(--dark-color);
   }
 
-  .metric-good { color: #4cc9f0; }
-  .metric-warning { color: #f8961e; }
-  .metric-bad { color: #ef233c; }
+  .metric-good { color: var(--success-color); }
+  .metric-warning { color: var(--warning-color); }
+  .metric-bad { color: var(--danger-color); }
 
   .metric-icon {
     width: 20px;
@@ -56,13 +57,13 @@ description: Анализ SEO-параметров страниц
 <section class="hero" id="hero">
   <div class="container">
     <h1>SEO Анализатор</h1>
-    <p>Анализ страниц по URL с новыми метриками</p>
+    <p>Введите URL страниц для анализа (каждый URL с новой строки)</p>
     
     <form id="urlForm" class="seo-analysis">
       <div class="form__group">
         <textarea name="urls" id="urls" class="form__input" rows="5" required 
                   placeholder="https://example.com&#10;https://example.org"></textarea>
-        <label for="urls" class="form__label">URL страниц (по одному на строку)</label>
+        <label for="urls" class="form__label">URL страниц</label>
       </div>
       
       <div class="form__group">
@@ -72,36 +73,37 @@ description: Анализ SEO-параметров страниц
       </div>
       
       <button type="submit" class="button button--primary">Анализировать</button>
+      
+      <div id="formMessage" style="display: none;"></div>
     </form>
     
-    <div id="results" style="display: none; margin-top: 3rem;">
-      <h2>Результаты</h2>
+    <div id="results" class="seo-analysis" style="display: none;">
+      <h2>Результаты анализа</h2>
       <div id="resultsContent"></div>
     </div>
   </div>
 
-  <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); justify-content: center; align-items: center; flex-direction: column; z-index: 1000;">
-    <div style="width: 50px; height: 50px; border: 5px solid #e9ecef; border-top-color: #4361ee; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-    <p style="margin-top: 1.5rem;">Идет анализ...</p>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Идет анализ страниц, пожалуйста подождите...</p>
   </div>
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.getElementById('urlForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    const urls = e.target.urls.value.split('\n')
-      .map(url => url.trim())
-      .filter(url => url.length > 0);
+    const urlsInput = e.target.urls.value;
+    const keyword = e.target.keyword.value;
+    const urls = urlsInput.split('\n').map(url => url.trim()).filter(url => url !== '');
     
     if (urls.length === 0) {
-      alert('Введите хотя бы один URL');
+      showMessage('Введите хотя бы один URL', 'error');
       return;
     }
 
-    const keyword = e.target.keyword.value.trim();
     const loadingOverlay = document.getElementById('loadingOverlay');
-    
     loadingOverlay.style.display = 'flex';
     
     try {
@@ -111,36 +113,55 @@ description: Анализ SEO-параметров страниц
         body: JSON.stringify({ urls, keyword })
       });
       
-      if (!response.ok) throw new Error('Ошибка сервера');
+      if (!response.ok) throw new Error('Ошибка сервера: ' + response.status);
       
       const data = await response.json();
-      showResults(data, keyword);
+      displayResults(data, keyword);
     } catch (error) {
-      alert('Ошибка: ' + error.message);
+      showMessage('Ошибка: ' + error.message, 'error');
+      console.error('Ошибка:', error);
     } finally {
       loadingOverlay.style.display = 'none';
     }
   });
 
-  function showResults(data, keyword) {
-    const results = document.getElementById('results');
-    const content = document.getElementById('resultsContent');
+  function showMessage(text, type) {
+    const messageEl = document.getElementById('formMessage');
+    messageEl.textContent = text;
+    messageEl.className = type === 'error' ? 'error-message' : 'success-message';
+    messageEl.style.display = 'block';
+    setTimeout(() => messageEl.style.display = 'none', 5000);
+  }
+
+  function displayResults(data, keyword) {
+    const resultsContainer = document.getElementById('results');
+    const resultsContent = document.getElementById('resultsContent');
     
-    results.style.display = 'block';
-    content.innerHTML = '';
+    resultsContainer.style.display = 'block';
+    resultsContent.innerHTML = '';
     
-    data.forEach(item => {
+    if (!Array.isArray(data)) {
+      resultsContent.innerHTML = '<div class="error-message">Ошибка данных</div>';
+      return;
+    }
+    
+    data.forEach((item, index) => {
+      const isError = item.error || item.status >= 400;
       const card = document.createElement('div');
-      card.className = 'seo-analysis';
-      card.style.marginBottom = '2rem';
+      card.className = `result-card ${isError ? 'error' : ''}`;
       
       card.innerHTML = `
-        <h3>${item.url}</h3>
-        ${item.error ? `
-          <div style="color: #ef233c; padding: 1rem; background: rgba(239,35,60,0.1); border-radius: 4px;">
-            ${item.error}
+        <div class="result-header">
+          <div class="result-url">${item.url}</div>
+          <div class="result-status ${isError ? 'error' : ''}">
+            ${isError ? 'Ошибка' : 'Статус: ' + item.status}
           </div>
-        ` : `
+        </div>
+      `;
+      
+      if (!isError) {
+        // Новые метрики
+        card.innerHTML += `
           <div class="seo-metrics">
             <div class="metric-card">
               <div class="metric-title">
@@ -148,12 +169,12 @@ description: Анализ SEO-параметров страниц
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                 </svg>
-                URL Анализ
+                Анализ URL
               </div>
               <div class="metric-value ${item.urlAnalysis.length > 60 ? 'metric-bad' : 'metric-good'}">
                 ${item.urlAnalysis.length} симв.
               </div>
-              <div style="margin-top: 0.5rem; font-size: 1.3rem; color: #495057;">
+              <div style="margin-top: 0.5rem; font-size: 1.3rem; color: var(--gray-dark);">
                 ${item.urlAnalysis.isDynamic ? '❌ Динамический' : '✅ ЧПУ'}
                 ${item.urlAnalysis.hasKeyword ? '· ✅ Ключ. слово' : ''}
               </div>
@@ -182,21 +203,71 @@ description: Анализ SEO-параметров страниц
               <div class="metric-value ${item.contentAnalysis.length < 1500 ? 'metric-bad' : item.contentAnalysis.length < 2500 ? 'metric-warning' : 'metric-good'}">
                 ${item.contentAnalysis.length} симв.
               </div>
-              <div style="margin-top: 0.5rem; font-size: 1.3rem; color: #495057;">
+              <div style="margin-top: 0.5rem; font-size: 1.3rem; color: var(--gray-dark);">
                 ${Math.round(item.contentAnalysis.textToCodeRatio)}% текста
               </div>
             </div>
           </div>
 
-          <div style="margin-top: 1.5rem;">
-            <p><strong>Title:</strong> ${item.title}</p>
-            <p><strong>H1:</strong> ${item.h1}</p>
-            ${keyword ? `<p><strong>Ключевая фраза:</strong> ${item.keywordStats.exactCount} точных вхождений</p>` : ''}
+          <!-- Существующие данные -->
+          <div class="result-meta">
+            <div class="meta-item">
+              <span class="meta-label">Title</span>
+              <span class="meta-value">${item.title || '—'}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">H1</span>
+              <span class="meta-value">${item.h1 || '—'}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Description</span>
+              <span class="meta-value">${item.description || '—'}</span>
+            </div>
+            ${keyword ? `
+              <div class="meta-item">
+                <span class="meta-label">Ключевая фраза</span>
+                <span class="meta-value">
+                  ${item.keywordStats.exactCount} точных вхождений
+                </span>
+              </div>
+            ` : ''}
           </div>
-        `}
-      `;
+
+          <div class="details-toggle" data-index="${index}">▼ Показать детали</div>
+          <div class="details-content" id="details-${index}" style="display: none;">
+            <div class="meta-item">
+              <span class="meta-label">H2 заголовки (${item.h2.length})</span>
+              ${item.h2.length > 0 ? `
+                <ul style="margin-top: 0.5rem;">
+                  ${item.h2.map(h2 => `<li>${h2}</li>`).join('')}
+                </ul>
+              ` : '<span>Отсутствуют</span>'}
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Alt тексты (${item.alts.filter(a => a).length})</span>
+              ${item.alts.filter(a => a).length > 0 ? `
+                <div style="margin-top: 0.5rem;">
+                  ${item.alts.filter(a => a).map(alt => `<span class="tag">${alt}</span>`).join('')}
+                </div>
+              ` : '<span>Отсутствуют</span>'}
+            </div>
+          </div>
+        `;
+      } else {
+        card.innerHTML += `<div class="error-message">${item.error}</div>`;
+      }
       
-      content.appendChild(card);
+      resultsContent.appendChild(card);
+    });
+
+    // Обработчики для раскрытия деталей
+    document.querySelectorAll('.details-toggle').forEach(toggle => {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        const details = document.getElementById(this.getAttribute('data-index'));
+        details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        this.textContent = details.style.display === 'none' ? '▼ Показать детали' : '▲ Скрыть детали';
+      });
     });
   }
 </script>
