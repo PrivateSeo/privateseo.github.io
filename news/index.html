@@ -2,20 +2,27 @@
 layout: default
 title: Новости
 permalink: /news/
+pagination:
+  enabled: true
+  collection: posts
+  per_page: 5
+  sort_field: 'date'
 ---
 
 <section class="news-list">
   <div class="container">
     <h1 class="page-title">Новости</h1>
-    
+
     <div class="news-grid">
-      {% assign news_posts = site.posts | where: "layout", "news" %}
-      {% for post in news_posts %}
+      {% if paginator.posts == empty %}
+        <p>Новостей пока нет.</p>
+      {% else %}
+        {% for post in paginator.posts %}
         <article class="news-card">
           <a href="{{ post.url }}" class="news-card__link">
             {% if post.image %}
               <div class="news-card__image">
-                <img src="{{ post.image }}" alt="{{ post.name }}" loading="lazy">
+                <img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy">
               </div>
             {% endif %}
             
@@ -29,15 +36,42 @@ permalink: /news/
                 {% endif %}
               </div>
               
-              <h2 class="news-card__title">{{ post.name }}</h2>
+              <h2 class="news-card__title">{{ post.title }}</h2>
               
               <div class="news-card__excerpt">
-                {{ post.description | truncate: 160 }}
+                {{ post.excerpt | strip_html | truncate: 160 }}
               </div>
             </div>
           </a>
         </article>
-      {% endfor %}
+        {% endfor %}
+      {% endif %}
     </div>
+
+    <!-- Пагинация -->
+    <nav class="pagination" role="navigation">
+      <ul>
+        {% if paginator.previous_page %}
+          <li><a href="{{ paginator.previous_page_path }}" aria-label="Предыдущая страница">&laquo; Назад</a></li>
+        {% else %}
+          <li class="disabled"><span>&laquo; Назад</span></li>
+        {% endif %}
+
+        {% for page in (1..paginator.total_pages) %}
+          {% if page == paginator.page %}
+            <li class="active"><span>{{ page }}</span></li>
+          {% else %}
+            <li><a href="{{ paginator.paginate_path | replace: ':num', page }}">{{ page }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if paginator.next_page %}
+          <li><a href="{{ paginator.next_page_path }}" aria-label="Следующая страница">Вперед &raquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>Вперед &raquo;</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+
   </div>
 </section>

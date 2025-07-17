@@ -1,3 +1,6 @@
+paginate: 6
+paginate_path: "/news/page:num/"
+
 title: "Частный SEO специалист и Web-разработчик"
 description: "Создание, поддержка и продвижение сайтов"
 url: "https://privseo.ru"
