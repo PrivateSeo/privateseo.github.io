@@ -21,7 +21,7 @@ layout: default
     <h1 class="page-title">{{ site.data.categories[page.category] }}</h1>
     
     <div class="news-grid">
-      {% assign category_posts = site.posts | where: "category", page.category | reverse %}
+      {% assign category_posts = site.posts | where: "category", page.category %}
       {% for post in category_posts %}
         <article class="news-card">
           <a href="{{ post.url }}" class="news-card__link">
