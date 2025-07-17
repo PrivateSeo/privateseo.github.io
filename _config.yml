@@ -18,3 +18,13 @@ collections:
   categories:
     output: true
     permalink: /category/:path/
+
+plugins:
+  - jekyll-paginate-v2
+
+pagination:
+  enabled: true
+  per_page: 6 # Количество новостей на странице
+  permalink: '/page/:num/'
+  sort_field: 'date'
+  sort_reverse: true
