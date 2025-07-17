@@ -1,1 +1,0 @@
-gem 'jekyll-paginate-v2'
