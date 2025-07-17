@@ -43,28 +43,36 @@ pagination:
     </div>
 
     <!-- Пагинация -->
-    <nav class="pagination" role="navigation">
-      <ul>
-        {% if paginator.previous_page %}
-          <li><a href="{{ paginator.previous_page_path }}" aria-label="Предыдущая страница">&laquo; Назад</a></li>
-        {% else %}
-          <li class="disabled"><span>&laquo; Назад</span></li>
-        {% endif %}
+	<nav class="pagination" role="navigation">
+	  <ul>
+		{% if paginator.previous_page %}
+		  {% if paginator.previous_page == 1 %}
+			<li><a href="/news/" aria-label="Предыдущая страница">&laquo; Назад</a></li>
+		  {% else %}
+			<li><a href="{{ paginator.previous_page_path }}" aria-label="Предыдущая страница">&laquo; Назад</a></li>
+		  {% endif %}
+		{% else %}
+		  <li class="disabled"><span>&laquo; Назад</span></li>
+		{% endif %}
 
-        {% for page in (1..paginator.total_pages) %}
-          {% if page == paginator.page %}
-            <li class="active"><span>{{ page }}</span></li>
-          {% else %}
-            <li><a href="{{ paginator.paginate_path | replace: ':num', page }}">{{ page }}</a></li>
-          {% endif %}
-        {% endfor %}
+		{% for page in (1..paginator.total_pages) %}
+		  {% if page == paginator.page %}
+			<li class="active"><span>{{ page }}</span></li>
+		  {% else %}
+			{% if page == 1 %}
+			  <li><a href="/news/">{{ page }}</a></li>
+			{% else %}
+			  <li><a href="{{ paginator.paginate_path | replace: ':num', page }}">{{ page }}</a></li>
+			{% endif %}
+		  {% endif %}
+		{% endfor %}
 
-        {% if paginator.next_page %}
-          <li><a href="{{ paginator.next_page_path }}" aria-label="Следующая страница">Вперед &raquo;</a></li>
-        {% else %}
-          <li class="disabled"><span>Вперед &raquo;</span></li>
-        {% endif %}
-      </ul>
-    </nav>
+		{% if paginator.next_page %}
+		  <li><a href="{{ paginator.next_page_path }}" aria-label="Следующая страница">Вперед &raquo;</a></li>
+		{% else %}
+		  <li class="disabled"><span>Вперед &raquo;</span></li>
+		{% endif %}
+	  </ul>
+	</nav>
   </div>
 </section>
