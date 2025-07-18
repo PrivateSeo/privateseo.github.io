@@ -91,7 +91,11 @@ async function submitComment(comment) {
         
         const response = await fetch('https://seoparse.netlify.app/.netlify/functions/handle-comment', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({
                 newsId: comment.newsId,
                 author: comment.author.substring(0, 50),
@@ -99,14 +103,17 @@ async function submitComment(comment) {
             })
         });
 
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || data.message || 'Ошибка сервера');
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || errorData.message || 'Ошибка сервера');
+        }
         
+        const data = await response.json();
         alert('Комментарий отправлен на модерацию!');
         document.getElementById('comment-form').reset();
         
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Submit error:', error);
         alert('Ошибка: ' + (error.message || 'Попробуйте позже'));
     } finally {
         submitBtn.disabled = false;
