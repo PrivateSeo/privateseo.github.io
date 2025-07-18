@@ -1,11 +1,13 @@
+title: "Частный SEO специалист и Web-разработчик"
+description: "Создание, поддержка и продвижение сайтов"
+url: "https://privseo.ru"  # Без слеша в конце!
+author: "Данильченко Роберт"
+
+# Настройки пагинации
 paginate: 6
 paginate_path: "/news/page:num/"
 
-title: "Частный SEO специалист и Web-разработчик"
-description: "Создание, поддержка и продвижение сайтов"
-url: "https://privseo.ru"
-author: "Данильченко Роберт"
-
+# Соцсети
 socials:
   - name: "Telegram"
     url: "https://t.me/robDaNilov"
@@ -17,18 +19,17 @@ socials:
     url: "https://teams.microsoft.com/l/chat/0/0?users=DanilovRob@ya.ru"
     icon: "microsoft.webp"
 
+# Коллекции
 collections:
   categories:
     output: true
     permalink: /category/:path/
 
+# Плагины (объединённый блок)
 plugins:
-  - jekyll-sitemap
+  - jekyll-seo-tag  # Включает sitemap автоматически
 
-# Исключает файлы из обработки Jekyll (они не попадут и в sitemap)
+# Исключённые файлы
 exclude:
   - "yandex_*.html"
   - "tools/*"
-
-plugins:
-  - jekyll-seo-tag
