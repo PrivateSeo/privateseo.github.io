@@ -81,7 +81,7 @@ function loadComments(newsId) {
     });
 }
 function submitComment(comment) {
-    fetch('/.netlify/functions/handle-comment', {
+    fetch('/netlify/functions/handle-comment', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
