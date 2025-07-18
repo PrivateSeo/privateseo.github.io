@@ -1,96 +1,83 @@
 const { Telegraf } = require('telegraf');
 
-exports.handler = async (event) => {
-    // Проверка метода запроса
+exports.handler = async (event, context) => {
+    // Разрешаем CORS
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'POST'
+            },
+            body: ''
+        };
+    }
+
+    // Проверяем метод
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
-            body: JSON.stringify({ 
-                success: false,
-                error: 'Method Not Allowed',
-                message: 'Используйте POST запрос для отправки комментариев'
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ error: 'Method Not Allowed' })
         };
     }
 
     try {
-        // Парсим тело запроса
         const comment = JSON.parse(event.body);
         
-        // Валидация данных
+        // Валидация
         if (!comment.newsId || !comment.author || !comment.text) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({
-                    success: false,
-                    error: 'Неполные данные',
-                    message: 'Укажите newsId, author и text'
-                })
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ error: 'Missing required fields' })
             };
         }
 
-        // Добавляем timestamp если его нет
-        if (!comment.timestamp) {
-            comment.timestamp = new Date().toISOString();
-        }
-        
-        // Устанавливаем статус "на модерации"
-        comment.status = 'pending';
-
-        // Инициализируем бота
+        // Инициализация бота
         const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
         
-        // Отправляем сообщение в Telegram
+        // Отправка в Telegram
         await bot.telegram.sendMessage(
             process.env.TELEGRAM_CHAT_ID,
-            `📨 Новый комментарий на модерацию:\n\n` +
-            `📝 Статья: ${comment.newsId}\n` +
+            `📝 Новый комментарий:\n\n` +
+            `📌 Статья: ${comment.newsId}\n` +
             `👤 Автор: ${comment.author}\n` +
             `💬 Текст: ${comment.text}\n\n` +
-            `⏳ ${new Date(comment.timestamp).toLocaleString()}`,
+            `⏳ Время: ${new Date().toLocaleString()}`,
             {
                 reply_markup: {
                     inline_keyboard: [
                         [
-                            { 
-                                text: '✅ Одобрить', 
-                                callback_data: `approve_${comment.newsId}_${comment.timestamp}`
-                            },
-                            { 
-                                text: '❌ Отклонить', 
-                                callback_data: `reject_${comment.newsId}_${comment.timestamp}`
-                            }
+                            { text: '✅ Одобрить', callback_data: `approve_${comment.newsId}` },
+                            { text: '❌ Отклонить', callback_data: `reject_${comment.newsId}` }
                         ]
                     ]
                 }
             }
         );
 
-        // Успешный ответ
         return {
             statusCode: 200,
-            headers: {
+            headers: { 
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ 
-                success: true,
-                message: 'Комментарий отправлен на модерацию'
-            })
+            body: JSON.stringify({ success: true, message: 'Комментарий отправлен на модерацию' })
         };
 
     } catch (error) {
-        console.error('Ошибка в handle-comment:', error);
-        
         return {
             statusCode: 500,
-            headers: {
+            headers: { 
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ 
-                success: false,
-                error: error.message,
-                message: 'Произошла ошибка при обработке комментария'
-            })
+            body: JSON.stringify({ error: error.message })
         };
     }
 };
