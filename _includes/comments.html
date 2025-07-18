@@ -1,4 +1,12 @@
-{{ page.frontmatter.id }}
+{% raw %}
+<pre>
+Debug page object:
+{{ page | inspect }}
+
+Front matter fields:
+{{ page.frontmatter | inspect }}
+</pre>
+{% endraw %}
 <div id="comments-section">
     <h3>Комментарии</h3>
     
