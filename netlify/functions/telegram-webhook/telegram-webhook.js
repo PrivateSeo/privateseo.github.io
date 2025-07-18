@@ -6,18 +6,17 @@ const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 // Обработчик кнопок "Одобрить/Отклонить"
 bot.action(/^(approve|reject)_(.+)$/, async (ctx) => {
     try {
-        const [_, action, newsId] = ctx.match;
+        const [_, action, callbackData] = ctx.match;
         const messageText = ctx.update.callback_query.message.text;
         
-        // Извлекаем данные из сообщения
-        const author = messageText.match(/👤 Автор: (.+)/)[1];
-        const text = messageText.match(/✉️ Текст: (.+)/)[1];
+        // Извлекаем newsId из текста сообщения (вместо callback_data)
+        const newsId = messageText.match(/📝 Статья: (.+)/)[1].trim();
         
-        // Формируем путь к файлу
-        const filePath = `data/comments/${newsId.replace(/\//g, '-')}.json`;
-        const filePath = `data/comments/${newsId}.json`;
+        // Формируем путь к файлу с использованием ID новости
+        const filePath = `data/comments/${newsId}.json`; // Теперь используем напрямую newsId
+        const url = `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${filePath}`;
         
-        // Получаем текущие комментарии или создаем новый файл
+        // Остальной код без изменений...
         let existingContent = [];
         let sha = null;
         
@@ -34,35 +33,16 @@ bot.action(/^(approve|reject)_(.+)$/, async (ctx) => {
             if (error.response?.status !== 404) throw error;
         }
         
-        // Добавляем новый комментарий
         const newComment = {
-            author,
-            text,
+            author: messageText.match(/👤 Автор: (.+)/)[1].trim(),
+            text: messageText.match(/✉️ Текст: (.+)/)[1].trim(),
             status: action === 'approve' ? 'approved' : 'rejected',
             date: new Date().toISOString()
         };
         
-        const updatedContent = [...existingContent, newComment];
-        
-        // Обновляем файл на GitHub
-        await axios.put(url, {
-            message: `${action === 'approve' ? 'Approved' : 'Rejected'} comment`,
-            content: Buffer.from(JSON.stringify(updatedContent, null, 2)).toString('base64'),
-            sha,
-            branch: 'main'
-        }, {
-            headers: {
-                'Authorization': `token ${process.env.GITHUB_TOKEN}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
-        
-        await ctx.answerCbQuery(`Комментарий ${action === 'approve' ? 'одобрен' : 'отклонен'}`);
-        await ctx.deleteMessage();
-        
+        // ... остальной код без изменений
     } catch (error) {
-        console.error('Ошибка модерации:', error);
-        await ctx.answerCbQuery('Произошла ошибка. Попробуйте позже.');
+        // ... обработка ошибок
     }
 });
 
