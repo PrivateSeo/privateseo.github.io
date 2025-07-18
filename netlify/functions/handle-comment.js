@@ -1,3 +1,4 @@
+// /netlify/functions/handle-comment.js
 const { Telegraf } = require('telegraf');
 
 exports.handler = async (event) => {
@@ -29,7 +30,7 @@ exports.handler = async (event) => {
 
     try {
         const comment = JSON.parse(event.body);
-        
+
         // Валидация данных
         if (!comment.newsId || !comment.author || !comment.text) {
             return {
@@ -39,12 +40,14 @@ exports.handler = async (event) => {
             };
         }
 
-        // Создаем безопасный callback_data
-        const callbackData = `comment_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-        
+        // Формируем callback_data с использованием newsId, чтобы бот знал от какой новости комментарий
+        // Заменим слэши или другие спецсимволы в newsId, если они есть
+        const safeNewsId = comment.newsId.replace(/[^a-zA-Z0-9-_]/g, '');
+        const callbackData = `comment_${safeNewsId}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
         const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
-        
-        // Отправляем сообщение в Telegram
+
+        // Отправляем сообщение в телеграм
         await bot.telegram.sendMessage(
             process.env.TELEGRAM_CHAT_ID,
             `📨 Новый комментарий\n\n` +
@@ -74,7 +77,7 @@ exports.handler = async (event) => {
         return {
             statusCode: 500,
             headers,
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 error: 'Internal Server Error',
                 message: error.response?.description || error.message
             })
