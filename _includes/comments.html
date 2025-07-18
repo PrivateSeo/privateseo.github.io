@@ -41,37 +41,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function loadComments(newsId) {
     fetch(`/data/comments/${newsId}.json`)
-        .then(response => {
-            if (!response.ok) throw new Error('Комментарии не найдены');
-            return response.json();
-        })
-        .then(comments => {
-            const container = document.getElementById('comments-list');
-            container.innerHTML = '';
-            
-            const approvedComments = comments.filter(c => c.status === 'approved');
-            
-            if (approvedComments.length === 0) {
-                container.innerHTML = '<p>Пока нет комментариев.</p>';
-                return;
-            }
-            
-            approvedComments.forEach(comment => {
-                const commentEl = document.createElement('div');
-                commentEl.className = 'comment';
-                commentEl.innerHTML = `
-                    <strong>${comment.author}</strong>
-                    <small>${new Date(comment.timestamp).toLocaleString()}</small>
-                    <p>${comment.text}</p>
-                `;
-                container.appendChild(commentEl);
-            });
-        })
-        .catch(() => {
-            document.getElementById('comments-list').innerHTML = '<p>Пока нет комментариев.</p>';
+    .then(response => {
+        if (response.status === 404) {
+            // Файла нет - это нормально для первой загрузки
+            return [];
+        }
+        if (!response.ok) {
+            throw new Error('Ошибка загрузки комментариев');
+        }
+        return response.json();
+    })
+    .then(comments => {
+        const container = document.getElementById('comments-list');
+        container.innerHTML = '';
+        
+        // Фильтруем только одобренные комментарии
+        const approvedComments = comments.filter(c => c.status === 'approved');
+        
+        if (approvedComments.length === 0) {
+            container.innerHTML = '<p>Пока нет комментариев. Будьте первым!</p>';
+            return;
+        }
+        
+        approvedComments.forEach(comment => {
+            const commentEl = document.createElement('div');
+            commentEl.className = 'comment';
+            commentEl.innerHTML = `
+                <strong>${comment.author}</strong>
+                <small>${new Date(comment.timestamp).toLocaleString()}</small>
+                <p>${comment.text}</p>
+            `;
+            container.appendChild(commentEl);
         });
+    })
+    .catch(error => {
+        console.error('Error loading comments:', error);
+        document.getElementById('comments-list').innerHTML = 
+            '<p>Пока нет комментариев. Будьте первым!</p>';
+    });
 }
-
 function submitComment(comment) {
     fetch('/.netlify/functions/handle-comment', {
         method: 'POST',
@@ -80,14 +88,17 @@ function submitComment(comment) {
         },
         body: JSON.stringify(comment)
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Комментарий отправлен на модерацию!');
-            document.getElementById('comment-form').reset();
-        } else {
-            alert('Ошибка при отправке комментария: ' + data.error);
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text);
+            });
         }
+        return response.json();
+    })
+    .then(data => {
+        alert('Комментарий отправлен на модерацию!');
+        document.getElementById('comment-form').reset();
     })
     .catch(error => {
         alert('Ошибка при отправке комментария: ' + error.message);
