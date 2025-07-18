@@ -1,12 +1,16 @@
 ---
 layout: news
-name: "Google включает данные AI Mode в отчеты Search Console"
-title: "Google AI Mode в Search Console: как изменилась аналитика в 2025"
-description: "Google начал учитывать трафик из AI Mode в общих отчетах Search Console. Узнайте, как анализировать новые данные и адаптировать SEO-стратегию."
+name: Google включает данные AI Mode в отчеты Search Console
+title: 'Google AI Mode в Search Console: как изменилась аналитика в 2025'
+description: Google начал учитывать трафик из AI Mode в общих отчетах Search Console.
+  Узнайте, как анализировать новые данные и адаптировать SEO-стратегию.
 date: 2025-06-24
-image: "/assets/images/news/20250624_083138.jpg"
+image: /assets/images/news/20250624_083138.jpg
 category: seo
+id: 51d2bbdd-36cc-4c1f-abe4-f0fdae27dff9
 ---
+
+
 
 <p class="news-lead">Google обновил документацию, подтвердив, что данные AI Mode теперь учитываются в отчетах Performance в Search Console.</p>
   <h2>Что изменилось?</h2>
