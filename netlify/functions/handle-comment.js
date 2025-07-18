@@ -1,4 +1,3 @@
-// /netlify/functions/handle-comment.js
 const { Telegraf } = require('telegraf');
 
 exports.handler = async (event) => {
@@ -10,7 +9,6 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json'
     };
 
-    // Обработка предварительного OPTIONS запроса
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 204,
@@ -19,7 +17,6 @@ exports.handler = async (event) => {
         };
     }
 
-    // Проверяем метод запроса
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -31,7 +28,6 @@ exports.handler = async (event) => {
     try {
         const comment = JSON.parse(event.body);
 
-        // Валидация данных
         if (!comment.newsId || !comment.author || !comment.text) {
             return {
                 statusCode: 400,
@@ -40,14 +36,21 @@ exports.handler = async (event) => {
             };
         }
 
-        // Формируем callback_data с использованием newsId, чтобы бот знал от какой новости комментарий
-        // Заменим слэши или другие спецсимволы в newsId, если они есть
+        // Проверка наличия переменных окружения
+        if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
+            console.error('TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID не установлены');
+            return {
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({ error: 'Server configuration error' }),
+            };
+        }
+
         const safeNewsId = comment.newsId.replace(/[^a-zA-Z0-9-_]/g, '');
         const callbackData = `comment_${safeNewsId}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
         const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 
-        // Отправляем сообщение в телеграм
         await bot.telegram.sendMessage(
             process.env.TELEGRAM_CHAT_ID,
             `📨 Новый комментарий\n\n` +
@@ -73,13 +76,18 @@ exports.handler = async (event) => {
         };
 
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error in handle-comment:', error);
         return {
             statusCode: 500,
             headers,
             body: JSON.stringify({
                 error: 'Internal Server Error',
-                message: error.response?.description || error.message
+                message: error.message,
+                stack: error.stack,
+                response: error.response ? {
+                    status: error.response.status,
+                    data: error.response.data
+                } : undefined
             })
         };
     }
