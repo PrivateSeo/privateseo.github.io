@@ -56,7 +56,7 @@ bot.action(/^(approve|reject)_(.+)_(.+)$/, async (ctx) => {
                 message: `${action === 'approve' ? 'Одобрен' : 'Отклонен'} комментарий для статьи ${newsId}`,
                 content: Buffer.from(JSON.stringify(existingComments, null, 2)).toString('base64'),
                 sha: existingFile ? existingFile.sha : undefined,
-                branch: process.env.BRANCH
+                branch: process.env.GITHUB_BRANCH
             },
             {
                 headers: {
