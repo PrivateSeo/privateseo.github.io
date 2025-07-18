@@ -1,0 +1,150 @@
+<div id="comments-section">
+    <h3>Комментарии</h3>
+    
+    <form id="comment-form">
+        <input type="hidden" id="news-id" value="{{ page.id }}">
+        <div>
+            <label for="author">Имя:</label>
+            <input type="text" id="author" required>
+        </div>
+        <div>
+            <label for="comment">Комментарий:</label>
+            <textarea id="comment" required></textarea>
+        </div>
+        <button type="submit">Отправить на модерацию</button>
+    </form>
+
+    <div id="comments-list">
+        <!-- Комментарии будут загружены здесь -->
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newsId = '{{ page.id }}';
+    loadComments(newsId);
+    
+    document.getElementById('comment-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const commentData = {
+            newsId: newsId,
+            author: document.getElementById('author').value,
+            text: document.getElementById('comment').value,
+            timestamp: new Date().toISOString(),
+            status: 'pending'
+        };
+        
+        submitComment(commentData);
+    });
+});
+
+function loadComments(newsId) {
+    fetch(`/data/comments/${newsId}.json`)
+        .then(response => {
+            if (!response.ok) throw new Error('Комментарии не найдены');
+            return response.json();
+        })
+        .then(comments => {
+            const container = document.getElementById('comments-list');
+            container.innerHTML = '';
+            
+            const approvedComments = comments.filter(c => c.status === 'approved');
+            
+            if (approvedComments.length === 0) {
+                container.innerHTML = '<p>Пока нет комментариев.</p>';
+                return;
+            }
+            
+            approvedComments.forEach(comment => {
+                const commentEl = document.createElement('div');
+                commentEl.className = 'comment';
+                commentEl.innerHTML = `
+                    <strong>${comment.author}</strong>
+                    <small>${new Date(comment.timestamp).toLocaleString()}</small>
+                    <p>${comment.text}</p>
+                `;
+                container.appendChild(commentEl);
+            });
+        })
+        .catch(() => {
+            document.getElementById('comments-list').innerHTML = '<p>Пока нет комментариев.</p>';
+        });
+}
+
+function submitComment(comment) {
+    fetch('/.netlify/functions/handle-comment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(comment)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Комментарий отправлен на модерацию!');
+            document.getElementById('comment-form').reset();
+        } else {
+            alert('Ошибка при отправке комментария: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Ошибка при отправке комментария: ' + error.message);
+    });
+}
+</script>
+
+<style>
+#comments-section {
+    margin: 2rem 0;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.comment {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.comment small {
+    color: #666;
+    display: block;
+    margin: 0.3rem 0;
+}
+
+#comment-form div {
+    margin: 1rem 0;
+}
+
+#comment-form label {
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+#comment-form input, #comment-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#comment-form textarea {
+    min-height: 100px;
+}
+
+#comment-form button {
+    background: #007acc;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#comment-form button:hover {
+    background: #0062a3;
+}
+</style>
