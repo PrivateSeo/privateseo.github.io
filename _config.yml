@@ -29,3 +29,6 @@ plugins:
 exclude:
   - "yandex_*.html"
   - "tools/*"
+
+plugins:
+  - jekyll-seo-tag
