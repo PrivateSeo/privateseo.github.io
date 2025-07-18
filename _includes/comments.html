@@ -21,20 +21,21 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const newsId = '{{ page.id }}';
+    const newsId = '{{ page.id }}';  // берём id именно из front matter
+
     loadComments(newsId);
-    
+
     document.getElementById('comment-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const commentData = {
-            newsId: newsId,
+            newsId: newsId,          // передаём именно id новости
             author: document.getElementById('author').value,
             text: document.getElementById('comment').value,
             timestamp: new Date().toISOString(),
             status: 'pending'
         };
-        
+
         submitComment(commentData);
     });
 });
