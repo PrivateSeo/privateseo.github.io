@@ -14,7 +14,7 @@ bot.action(/^(approve|reject)_(.+)$/, async (ctx) => {
         const text = messageText.match(/✉️ Текст: (.+)/)[1];
         
         // Формируем путь к файлу
-        const filePath = `data/comments/${newsId.replace(/\//g, '-')}.json`;
+        const filePath = `data/comments/${newsId}.json`;
         const url = `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${filePath}`;
         
         // Получаем текущие комментарии или создаем новый файл
