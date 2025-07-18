@@ -1,6 +1,7 @@
 const { Telegraf } = require('telegraf');
 
 exports.handler = async (event) => {
+    // Устанавливаем CORS заголовки
     const headers = {
         'Access-Control-Allow-Origin': 'https://privseo.ru',
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -8,6 +9,7 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json'
     };
 
+    // Обработка предварительного OPTIONS запроса
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 204,
@@ -16,6 +18,7 @@ exports.handler = async (event) => {
         };
     }
 
+    // Проверяем метод запроса
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -27,6 +30,7 @@ exports.handler = async (event) => {
     try {
         const comment = JSON.parse(event.body);
         
+        // Валидация данных
         if (!comment.newsId || !comment.author || !comment.text) {
             return {
                 statusCode: 400,
@@ -35,8 +39,12 @@ exports.handler = async (event) => {
             };
         }
 
+        // Создаем безопасный callback_data
+        const callbackData = `comment_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+        
         const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
         
+        // Отправляем сообщение в Telegram
         await bot.telegram.sendMessage(
             process.env.TELEGRAM_CHAT_ID,
             `📨 Новый комментарий\n\n` +
@@ -47,8 +55,8 @@ exports.handler = async (event) => {
                 reply_markup: {
                     inline_keyboard: [
                         [
-                            { text: '✅ Одобрить', callback_data: `approve_${comment.newsId}` },
-                            { text: '❌ Отклонить', callback_data: `reject_${comment.newsId}` }
+                            { text: '✅ Одобрить', callback_data: `approve_${callbackData}` },
+                            { text: '❌ Отклонить', callback_data: `reject_${callbackData}` }
                         ]
                     ]
                 }
@@ -68,7 +76,7 @@ exports.handler = async (event) => {
             headers,
             body: JSON.stringify({ 
                 error: 'Internal Server Error',
-                message: error.message
+                message: error.response?.description || error.message
             })
         };
     }

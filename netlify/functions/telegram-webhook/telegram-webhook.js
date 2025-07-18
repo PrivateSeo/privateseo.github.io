@@ -3,17 +3,21 @@ const axios = require('axios');
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 
+// Обработчик кнопок "Одобрить/Отклонить"
 bot.action(/^(approve|reject)_(.+)$/, async (ctx) => {
     try {
         const [_, action, newsId] = ctx.match;
         const messageText = ctx.update.callback_query.message.text;
         
-        const author = messageText.match(/👤 Автор: (.+)/)[1].trim();
-        const text = messageText.match(/✉️ Текст: (.+)/)[1].trim();
+        // Извлекаем данные из сообщения
+        const author = messageText.match(/👤 Автор: (.+)/)[1];
+        const text = messageText.match(/✉️ Текст: (.+)/)[1];
         
-        const filePath = `data/comments/${newsId}.json`;
+        // Формируем путь к файлу
+        const filePath = `data/comments/${newsId.replace(/\//g, '-')}.json`;
         const url = `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${filePath}`;
         
+        // Получаем текущие комментарии или создаем новый файл
         let existingContent = [];
         let sha = null;
         
@@ -30,6 +34,7 @@ bot.action(/^(approve|reject)_(.+)$/, async (ctx) => {
             if (error.response?.status !== 404) throw error;
         }
         
+        // Добавляем новый комментарий
         const newComment = {
             author,
             text,
@@ -37,9 +42,12 @@ bot.action(/^(approve|reject)_(.+)$/, async (ctx) => {
             date: new Date().toISOString()
         };
         
+        const updatedContent = [...existingContent, newComment];
+        
+        // Обновляем файл на GitHub
         await axios.put(url, {
             message: `${action === 'approve' ? 'Approved' : 'Rejected'} comment`,
-            content: Buffer.from(JSON.stringify([...existingContent, newComment], null, 2)).toString('base64'),
+            content: Buffer.from(JSON.stringify(updatedContent, null, 2)).toString('base64'),
             sha,
             branch: 'main'
         }, {
