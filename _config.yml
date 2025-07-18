@@ -21,3 +21,6 @@ collections:
   categories:
     output: true
     permalink: /category/:path/
+
+plugins:
+  - jekyll-sitemap
