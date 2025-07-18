@@ -40,7 +40,7 @@ exports.handler = async (event) => {
         }
 
         // Создаем безопасный callback_data
-        const callbackData = `approve_${comment.newsId}`;
+        const callbackData = `comment_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
         
         const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
         
