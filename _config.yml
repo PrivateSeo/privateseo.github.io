@@ -24,3 +24,8 @@ collections:
 
 plugins:
   - jekyll-sitemap
+
+# Исключает файлы из обработки Jekyll (они не попадут и в sitemap)
+exclude:
+  - "yandex_*.html"
+  - "tools/*"
