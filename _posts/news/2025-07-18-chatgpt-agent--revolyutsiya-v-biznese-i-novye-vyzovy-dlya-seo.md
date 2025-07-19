@@ -2,14 +2,14 @@
 layout: news
 name: 'ChatGPT Agent: революция в бизнесе и новые вызовы для SEO'
 title: 'ChatGPT Agent: как подготовить сайт к эре AI-ассистентов'
-description: Полный разбор возможностей нового ChatGPT Agent от OpenAI. Как изменится
-  SEO, почему структура контента станет критически важной и как адаптировать сайты
-  уже сейчас.
+description: 'ChatGPT Agent: революция в бизнесе и новые вызовы для SEO'
 date: 2025-07-18
 image: /assets/images/news/20250718_082613.webp
 category: seo
-news_id: d6478517-c134-4037-848b-2de68148204d
+news_id: beca0f6afbe24f7c
 ---
+
+
 
 
 
