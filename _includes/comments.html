@@ -11,6 +11,7 @@
       {% for comment in approved_comments %}
         <li class="comment">
           <strong>{{ comment.author }}</strong>
+          <small>{{ comment.date | date: "%d.%m.%Y %H:%M" }}</small>
           <p>{{ comment.text }}</p>
         </li>
       {% endfor %}
