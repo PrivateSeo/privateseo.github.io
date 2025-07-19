@@ -47,14 +47,14 @@ exports.handler = async (event) => {
     }
 
     // Очистка newsId (оставляем только буквы и цифры)
-    const safeNewsId = comment.newsId.replace(/[^a-zA-Z0-9]/g, '');
+    const safeNewsId = comment.newsId;
     // Ограничиваем newsId до 20 символов
-    const shortNewsId = safeNewsId.slice(0, 20);
+    //const shortNewsId = safeNewsId.slice(0, 20);
     // Генерируем короткий уникальный хеш
-    const hash = crypto.createHash('md5').update(String(Date.now()) + Math.random()).digest('hex').slice(0, 8);
+    //const hash = crypto.createHash('md5').update(String(Date.now()) + Math.random()).digest('hex').slice(0, 8);
 
     // Формируем callback_data, не длиннее 64 символов
-    const callbackData = `comment_${shortNewsId}_${hash}`;
+    const callbackData = `comment_${shortNewsId}_${safeNewsId}`;
 
     const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 
