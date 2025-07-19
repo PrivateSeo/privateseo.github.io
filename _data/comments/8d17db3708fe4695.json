@@ -4,5 +4,11 @@
     "text": "KOMMENT",
     "status": "approved",
     "date": "2025-07-19T05:00:09.157Z"
+  },
+  {
+    "author": "Роберт",
+    "text": "Тестовый комментарий",
+    "status": "approved",
+    "date": "2025-07-19T05:51:26.700Z"
   }
 ]
