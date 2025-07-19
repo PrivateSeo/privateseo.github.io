@@ -23,7 +23,7 @@ bot.action(/^(approve|reject)_comment_([a-zA-Z0-9]{1,20})_[a-f0-9]{8}$/, async (
 
     // Используем newsId из callback_data как имя файла
     const safeFileName = newsId; // уже ограничено и безопасно
-    const filePath = `data/comments/${safeFileName}.json`;
+    const filePath = `_data/comments/${safeFileName}.json`;
     const url = `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${filePath}`;
 
     let existingContent = [];
