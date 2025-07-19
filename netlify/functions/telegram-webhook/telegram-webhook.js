@@ -1,23 +1,45 @@
 // /netlify/functions/telegram-webhook/telegram-webhook.js
 const { Telegraf } = require('telegraf');
 const axios = require('axios');
-const crypto = require('crypto');
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 
-// В памяти сопоставляем хеш callback_data с полным newsId
-// (так как callback_data ограничен 64 символами, передаем хеш чтобы избежать превышения лимита)
+// Ключ: хеш callback_data, значение: полный newsId
 const callbackMap = new Map();
 
-bot.action(/^(approve|reject)_comment_comment_[a-f0-9]{8}$/, async (ctx) => {
+// При получении callback_query
+bot.on('callback_query', (ctx) => {
   try {
-    const fullCallback = ctx.match[0]; // например: approve_comment_ab12cd34
-    const [action,, hash] = fullCallback.split('_');
+    const data = ctx.callbackQuery.data; // callback_data, например: approve_comment_ab12cd34
+    const match = data.match(/^(approve|reject)_comment_comment_([a-f0-9]{8})$/);
+    if (match) {
+      const hash = match[2];
 
-    // Получаем полный newsId из памяти по хешу
+      // Из текста сообщения извлечь newsId
+      const messageText = ctx.callbackQuery.message.text;
+      // "📝 Статья: 2fc8456c-4d4b-49d0-adc2-379a1a50c1b3"
+      const newsIdMatch = messageText.match(/📝 Статья: ([a-zA-Z0-9\-]+)/);
+      if (newsIdMatch) {
+        const newsId = newsIdMatch[1];
+        callbackMap.set(hash, newsId);
+      } else {
+        console.warn('Не удалось найти newsId в тексте сообщения');
+      }
+    }
+  } catch (err) {
+    console.error('Ошибка при обработке callback_query:', err);
+  }
+});
+
+// Обработчик approve/reject на основе callback_data
+bot.action(/^(approve|reject)_comment_comment_([a-f0-9]{8})$/, async (ctx) => {
+  try {
+    const action = ctx.match[1]; // approve или reject
+    const hash = ctx.match[2];
+
     const newsId = callbackMap.get(hash);
     if (!newsId) {
-      await ctx.answerCbQuery('Не удалось найти соответствие ID новости');
+      await ctx.answerCbQuery('Не удалось определить ID новости');
       return;
     }
 
@@ -34,9 +56,7 @@ bot.action(/^(approve|reject)_comment_comment_[a-f0-9]{8}$/, async (ctx) => {
     const author = authorMatch[1];
     const text = textMatch[1];
 
-    // Используем newsId без изменений как имя файла JSON
-    const safeFileName = newsId; // в формате 2fc8456c-4d4b-49d0-adc2-379a1a50c1b3
-    const filePath = `data/comments/${safeFileName}.json`;
+    const filePath = `data/comments/${newsId}.json`;
     const url = `https://api.github.com/repos/${process.env.REPO_OWNER}/${process.env.REPO_NAME}/contents/${filePath}`;
 
     let existingContent = [];
@@ -84,30 +104,12 @@ bot.action(/^(approve|reject)_comment_comment_[a-f0-9]{8}$/, async (ctx) => {
     await ctx.answerCbQuery(`Комментарий ${action === 'approve' ? 'одобрен' : 'отклонен'}`);
     await ctx.deleteMessage();
 
-    // Удаляем маппинг из памяти после обработки
+    // Удаляем из map, чтобы не росла память
     callbackMap.delete(hash);
 
   } catch (error) {
-    console.error('Ошибка модерации:', error);
+    console.error('Ошибка при модерации:', error);
     await ctx.answerCbQuery('Произошла ошибка. Попробуйте позже.');
-  }
-});
-
-bot.on('callback_query', (ctx) => {
-  // При первых запросах нужно сопоставить callback_data с newsId
-  // Из текста сообщения берем newsId и добавляем в map
-  // callback_data: approve_comment_ab12cd34, newsId в тексте сообщения.
-
-  const callbackData = ctx.update.callback_query.data; // например approve_comment_comment_ab12cd34
-  const m = callbackData.match(/^((approve|reject)_comment_comment_)([a-f0-9]{8})$/);
-  if (m) {
-    const hash = m[3];
-    const messageText = ctx.update.callback_query.message.text;
-    const newsIdMatch = messageText.match(/📝 Статья: ([a-zA-Z0-9\-]+)/);
-    if (newsIdMatch) {
-      const newsId = newsIdMatch[1];
-      callbackMap.set(hash, newsId);
-    }
   }
 });
 
