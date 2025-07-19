@@ -7,8 +7,10 @@ description: Google начал учитывать трафик из AI Mode в �
 date: 2025-06-24
 image: /assets/images/news/20250624_083138.jpg
 category: seo
-news_id: 51d2bbdd-36cc-4c1f-abe4-f0fdae27dff9
+news_id: b8787425571e4006
 ---
+
+
 
 
 
