@@ -10,8 +10,10 @@ description: Новая функция Google позволяет выбират�
 date: 2025-06-27
 image: /assets/images/news/20250627_123549.webp
 category: seo
-news_id: 627a7920-e1ec-4a84-8119-997d8a363c32
+news_id: 157ea2b6e8fe42ee
 ---
+
+
 
 
 
