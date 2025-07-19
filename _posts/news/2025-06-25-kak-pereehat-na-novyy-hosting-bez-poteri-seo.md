@@ -8,8 +8,10 @@ description: Узнайте, как правильно перенести сай
 date: 2025-06-25
 image: /assets/images/news/20250625_072307.webp
 category: seo
-news_id: ece686ab-22b1-4237-a82b-57a26c3119a2
+news_id: d926a0766d0448b6
 ---
+
+
 
 
 
