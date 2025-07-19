@@ -16,7 +16,22 @@
     </form>
 
     <div id="comments-list">
-        <!-- Комментарии будут загружены здесь -->
+        {% assign comments_file = page.news_id | append: '.json' %}
+        {% assign comments_path = 'data/comments/' | append: comments_file %}
+        
+        {% if site.data.comments[page.news_id] %}
+            {% assign approved_comments = site.data.comments[page.news_id] | where: "status", "approved" %}
+            
+            {% for comment in approved_comments %}
+                <div class="comment">
+                    <strong>{{ comment.author }}</strong>
+                    <small>{{ comment.timestamp | date: "%d.%m.%Y %H:%M" }}</small>
+                    <p>{{ comment.text }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Пока нет комментариев. Будьте первым!</p>
+        {% endif %}
     </div>
 </div>
 
@@ -24,7 +39,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const newsId = '{{ page.news_id }}';  // берём id именно из front matter
 
-    loadComments(newsId);
+    //loadComments(newsId);
 
     document.getElementById('comment-form').addEventListener('submit', function(e) {
         e.preventDefault();
