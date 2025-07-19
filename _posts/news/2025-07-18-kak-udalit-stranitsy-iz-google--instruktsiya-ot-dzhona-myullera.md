@@ -8,7 +8,6 @@ description: Разбираемся, как правильно убрать не
 date: 2025-07-18
 image: /assets/images/news/20250718_082405.webp
 category: seo
-id: b11eb797-29f5-4aef-a69d-091b8eb4ace8
 ---
 
 
