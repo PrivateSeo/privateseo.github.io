@@ -8,7 +8,7 @@ description: Новый инструмент от Wix помогает бизн�
 date: 2025-07-17
 image: /assets/images/news/20250717_124912.webp
 category: seo
-id: cc30e5d6-59d0-4764-81b4-381f46b2d463
+news_id: cc30e5d6-59d0-4764-81b4-381f46b2d463
 ---
 
 

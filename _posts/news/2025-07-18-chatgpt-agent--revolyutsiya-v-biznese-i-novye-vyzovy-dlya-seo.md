@@ -8,7 +8,7 @@ description: Полный разбор возможностей нового Cha
 date: 2025-07-18
 image: /assets/images/news/20250718_082613.webp
 category: seo
-id: d6478517-c134-4037-848b-2de68148204d
+news_id: d6478517-c134-4037-848b-2de68148204d
 ---
 
 

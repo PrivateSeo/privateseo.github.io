@@ -8,7 +8,7 @@ description: Когда Google вручает издателям волшебн�
 date: 2025-06-27
 image: /assets/images/news/20250627_125707.webp
 category: seo
-id: deb0c255-e229-4d6f-8acc-299c5ce85077
+news_id: deb0c255-e229-4d6f-8acc-299c5ce85077
 ---
 
 

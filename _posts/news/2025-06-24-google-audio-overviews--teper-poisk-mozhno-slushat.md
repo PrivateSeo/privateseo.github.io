@@ -8,7 +8,7 @@ description: Google запустил экспериментальную функ
 date: 2025-06-24
 image: /assets/images/news/20250624_112939.webp
 category: seo
-id: 0c25e600-99bb-440f-883a-d988027bc15c
+news_id: 0c25e600-99bb-440f-883a-d988027bc15c
 ---
 
 
