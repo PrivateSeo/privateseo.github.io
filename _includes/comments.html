@@ -3,7 +3,7 @@
     <h3>Комментарии</h3>
     
     <form id="comment-form">
-        <input type="hidden" id="news-id" value="{{ page.id }}">
+        <input type="hidden" id="news-id" value="{{ page.news_id }}">
         <div>
             <label for="author">Имя:</label>
             <input type="text" id="author" required>
@@ -22,7 +22,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const newsId = '{{ page.id }}';  // берём id именно из front matter
+    const newsId = '{{ page.news_id }}';  // берём id именно из front matter
 
     loadComments(newsId);
 
