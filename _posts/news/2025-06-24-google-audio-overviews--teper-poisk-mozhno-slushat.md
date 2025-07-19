@@ -1,6 +1,8 @@
 ---
 layout: news
-name: 'Google Audio Overviews: Теперь поиск можно слушать'
+name: 'Google Audio Overviews: Теперь поиск можно слушать
+
+  Title: Google тестирует аудио-ответы в поиске — будущее наступило, но не для всех'
 title: Google тестирует аудио-ответы в поиске — будущее наступило, но не для всех
 description: Google запустил экспериментальную функцию Audio Overviews, которая превращает
   поисковую выдачу в аудиокнигу. Пока только для США, только на английском и с оговоркой
@@ -8,8 +10,10 @@ description: Google запустил экспериментальную функ
 date: 2025-06-24
 image: /assets/images/news/20250624_112939.webp
 category: seo
-news_id: 0c25e600-99bb-440f-883a-d988027bc15c
+news_id: 7df0ef7cf7524fae
 ---
+
+
 
 
 
