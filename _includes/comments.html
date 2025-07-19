@@ -19,23 +19,23 @@
         <!-- Комментарии будут загружены здесь -->
     </div>
 
-{% assign news_comments = site.data.comments[page.news_id] %}
-{% assign approved_comments = news_comments | where: "status", "approved" %}
-{% assign sorted_comments = approved_comments | sort: "date" | reverse %}
+  {% assign news_comments = site.data.comments[page.news_id] %}
+  {% assign approved_comments = news_comments | where: "status", "approved" %}
 
-{% if sorted_comments and sorted_comments.size > 0 %}
-  <ul class="comments-list">
-    {% for comment in sorted_comments %}
-      <li class="comment">
-        <strong>{{ comment.author }}</strong>
-        <small>{{ comment.date | date: "%d.%m.%Y %H:%M" }}</small>
-        <p>{{ comment.text }}</p>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>Комментариев пока нет. Будьте первым!</p>
-{% endif %}
+  {% if approved_comments and approved_comments.size > 0 %}
+    <ul class="comments-list">
+      {% for comment in approved_comments %}
+        <li class="comment">
+          <strong>{{ comment.author }}</strong>
+          <small>{{ comment.date | date: "%d.%m.%Y %H:%M" }}</small>
+          <p>{{ comment.text }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Комментариев пока нет. Будьте первым!</p>
+  {% endif %}
+
 </div>
 
 <script>
