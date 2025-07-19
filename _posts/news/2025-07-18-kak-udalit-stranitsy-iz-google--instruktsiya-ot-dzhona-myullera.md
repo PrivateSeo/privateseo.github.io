@@ -8,7 +8,6 @@ description: Разбираемся, как правильно убрать не
 date: 2025-07-18
 image: /assets/images/news/20250718_082405.webp
 category: seo
-news_id: 2fc8456c-4d4b-49d0-adc2-379a1a50c1b3
 ---
 
 <h2>Как удалить страницы из поиска Google: разъяснения Джона Мюллера</h2>
