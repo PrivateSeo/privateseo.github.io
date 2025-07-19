@@ -2,24 +2,6 @@
 <div id="comments-section">
     <h3>Комментарии</h3>
 
-тестирование
-  {% assign news_comments = site.data.comments[page.news_id] %}
-  {% assign approved_comments = news_comments | where: "status", "approved" %}
-
-  {% if approved_comments and approved_comments.size > 0 %}
-    <ul class="comments-list">
-      {% for comment in approved_comments %}
-        <li class="comment">
-          <strong>{{ comment.author }}</strong>
-          <small>{{ comment.date | date: "%d.%m.%Y %H:%M" }}</small>
-          <p>{{ comment.text }}</p>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Комментариев пока нет. Будьте первым!</p>
-  {% endif %}
-    
     <form id="comment-form">
         <input type="hidden" id="news-id" value="{{ page.news_id }}">
         <div>
@@ -36,13 +18,31 @@
     <div id="comments-list">
         <!-- Комментарии будут загружены здесь -->
     </div>
+
+  {% assign news_comments = site.data.comments[page.news_id] %}
+  {% assign approved_comments = news_comments | where: "status", "approved" %}
+
+  {% if approved_comments and approved_comments.size > 0 %}
+    <ul class="comments-list">
+      {% for comment in approved_comments %}
+        <li class="comment">
+          <strong>{{ comment.author }}</strong>
+          <small>{{ comment.date | date: "%d.%m.%Y %H:%M" }}</small>
+          <p>{{ comment.text }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Комментариев пока нет. Будьте первым!</p>
+  {% endif %}
+
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const newsId = '{{ page.news_id }}';  // берём id именно из front matter
 
-    loadComments(newsId);
+    //loadComments(newsId);
 
     document.getElementById('comment-form').addEventListener('submit', function(e) {
         e.preventDefault();
