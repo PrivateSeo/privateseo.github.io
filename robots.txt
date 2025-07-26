@@ -1,4 +1,3 @@
 User-agent: *
-Allow: /
 
-Sitemap: https://privseo.ru/sitemap.xml
+Disallow: /
