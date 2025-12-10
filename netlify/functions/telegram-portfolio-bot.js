@@ -42,7 +42,23 @@ exports.handler = async (event) => {
 
     // POST запрос от Telegram
     if (event.httpMethod === 'POST') {
-      console.log('Telegram webhook received');
+      const update = JSON.parse(event.body);
+      console.log('Telegram update received:', update);
+      
+      // Обрабатываем сообщения
+      if (update.message && update.message.text) {
+        const chatId = update.message.chat.id;
+        const text = update.message.text;
+        const firstName = update.message.from.first_name || 'Пользователь';
+        
+        // Обработка команды /start
+        if (text === '/start' || text === '/start@RobDaNilov_bot') {
+          const welcomeMessage = `👋 Привет, ${firstName}!\n\nЯ бот-портфолио веб-разработчика. Бот в разработке, скоро здесь появится меню с портфолио и услугами!\n\nА пока можешь написать мне напрямую: @RobDaNilov`;
+          
+          await bot.telegram.sendMessage(chatId, welcomeMessage);
+        }
+      }
+      
       return {
         statusCode: 200,
         headers,
