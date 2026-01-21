@@ -7,14 +7,16 @@ layout: default
     <div class="container">
       <div class="article-meta">
         <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%d.%m.%Y" }}</time>
-        <span class="article-category">
-          <a href="/category/{{ page.category }}/" itemprop="articleSection">{{ site.data.categories[page.category] }}</a>
-        </span>
+        {% unless page.category == "php" %}
+          <span class="article-category">
+            <a href="/category/{{ page.category }}/" itemprop="articleSection">{{ site.data.categories[page.category] }}</a>
+          </span>
+        {% endunless %}
       </div>
       
       <h1 class="article-title" itemprop="headline">{{ page.name }}</h1>
       
-      {% if page.image %}
+      {% if page.image and page.category != "php" %}
         <div class="article-image" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
           <img src="{{ page.image }}" alt="{{ page.name }}" itemprop="url">
           <meta itemprop="width" content="1200">
