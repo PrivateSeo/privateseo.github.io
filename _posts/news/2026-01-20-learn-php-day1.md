@@ -5,7 +5,7 @@ title: "PHP обучение с нуля: День 1 - Установка и Hel
 description: "Полное руководство по установке PHP, настройке локального сервера и созданию первой программы. Урок для начинающих."
 date: 2026-01-20
 image: "/assets/images/news/20250722_113027.webp"
-category: seo
+category: php
 news_id: 8c52677794b947c3
 ---
 
@@ -414,3 +414,317 @@ echo "&lt;p&gt;&lt;strong&gt;Дата создания:&lt;/strong&gt; " . date(
 </div>
 </div>
 </section>
+<style>
+/* Дополнительные стили для урока PHP */
+.icon {
+margin-right: 10px;
+font-size: 1.2em;
+}
+
+.theory .card,
+.practice .task {
+background: white;
+border-radius: var(--border-radius);
+padding: 2.5rem;
+margin-bottom: 3rem;
+box-shadow: var(--box-shadow);
+border: 1px solid var(--gray-light);
+transition: var(--transition);
+}
+
+.theory .card:hover {
+transform: translateY(-5px);
+box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.task h3,
+.card h3 {
+color: var(--dark-color);
+margin-bottom: 1.5rem;
+font-size: 2rem;
+display: flex;
+align-items: center;
+}
+
+.key-points {
+background: rgba(67, 97, 238, 0.05);
+border-radius: var(--border-radius);
+padding: 1.5rem;
+margin: 1.5rem 0;
+}
+
+.key-points h4 {
+color: var(--primary-color);
+margin-bottom: 1rem;
+font-size: 1.6rem;
+}
+
+.key-points h5 {
+color: var(--dark-color);
+margin: 1rem 0 0.5rem;
+font-size: 1.4rem;
+}
+
+.key-points ul,
+.key-points ol {
+padding-left: 2rem;
+}
+
+.key-points li {
+margin-bottom: 0.5rem;
+line-height: 1.5;
+}
+
+.note {
+background: #fff8e1;
+border-left: 4px solid #ffb300;
+padding: 1.5rem;
+margin: 1.5rem 0;
+border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.note strong {
+color: #d35400;
+}
+
+.warning {
+background: #ffebee;
+border-left: 4px solid #e53935;
+padding: 1.5rem;
+margin: 1.5rem 0;
+border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.warning strong {
+color: #c62828;
+}
+
+.installation-options {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+margin: 2rem 0;
+}
+
+.option {
+background: var(--light-color);
+padding: 2rem;
+border-radius: var(--border-radius);
+border: 2px solid var(--gray-light);
+transition: var(--transition);
+}
+
+.option:hover {
+border-color: var(--primary-color);
+transform: translateY(-3px);
+}
+
+.option h4 {
+color: var(--dark-color);
+margin-bottom: 1rem;
+font-size: 1.8rem;
+}
+
+.option .button {
+margin-top: 1.5rem;
+}
+
+.resource-list {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 1.5rem;
+margin-top: 2rem;
+}
+
+.resource-item {
+background: white;
+padding: 1.5rem;
+border-radius: var(--border-radius);
+border: 1px solid var(--gray-light);
+transition: var(--transition);
+}
+
+.resource-item:hover {
+border-color: var(--primary-color);
+transform: translateY(-3px);
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.resource-item a {
+color: var(--dark-color);
+font-weight: 600;
+font-size: 1.6rem;
+display: block;
+margin-bottom: 0.5rem;
+}
+
+.resource-item p {
+color: var(--gray-dark);
+font-size: 1.4rem;
+margin: 0;
+}
+
+pre {
+background: #2d3436;
+color: #dfe6e9;
+padding: 1.5rem;
+border-radius: var(--border-radius);
+overflow-x: auto;
+font-family: 'Consolas', 'Monaco', monospace;
+font-size: 1.4rem;
+line-height: 1.5;
+margin: 1rem 0;
+border: 1px solid #444;
+}
+
+code {
+background: rgba(67, 97, 238, 0.1);
+color: var(--primary-color);
+padding: 0.2rem 0.4rem;
+border-radius: 3px;
+font-family: 'Consolas', 'Monaco', monospace;
+font-size: 1.4rem;
+}
+
+.homework,
+.quiz {
+background: var(--light-color);
+border-radius: var(--border-radius);
+padding: 2.5rem;
+margin-top: 2rem;
+border-left: 4px solid var(--primary-color);
+}
+
+.homework h3,
+.quiz h3 {
+color: var(--dark-color);
+margin-bottom: 1.5rem;
+}
+
+.homework ol,
+.quiz ol {
+padding-left: 2rem;
+}
+
+.homework li,
+.quiz li {
+margin-bottom: 1rem;
+line-height: 1.6;
+}
+
+.goal-box {
+background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(114, 9, 183, 0.1) 100%);
+border-radius: var(--border-radius);
+padding: 2.5rem;
+margin: 3rem 0;
+border-left: 4px solid var(--primary-color);
+}
+
+.goal-title {
+color: var(--dark-color);
+font-size: 2.2rem;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+}
+
+.goal-box p {
+font-size: 1.6rem;
+color: var(--gray-dark);
+margin: 0;
+line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+.theory .card,
+.practice .task,
+.homework,
+.quiz,
+.goal-box {
+padding: 1.5rem;
+}
+
+.installation-options {
+grid-template-columns: 1fr;
+}
+
+.resource-list {
+grid-template-columns: 1fr;
+}
+
+pre {
+font-size: 1.2rem;
+padding: 1rem;
+}
+}
+</style>
+
+<script>
+function toggleAnswers() {
+const answers = document.getElementById('answers');
+const button = event.target;
+
+if (answers.style.display === 'none') {
+answers.style.display = 'block';
+button.textContent = 'Скрыть ответы';
+} else {
+answers.style.display = 'none';
+button.textContent = 'Показать ответы';
+}
+}
+
+// Подсветка кода при клике
+document.addEventListener('DOMContentLoaded', function() {
+const codeBlocks = document.querySelectorAll('pre code');
+
+codeBlocks.forEach(block => {
+block.addEventListener('click', function() {
+const range = document.createRange();
+range.selectNodeContents(this);
+const selection = window.getSelection();
+selection.removeAllRanges();
+selection.addRange(range);
+
+// Показываем всплывающее сообщение
+const tooltip = document.createElement('div');
+tooltip.textContent = 'Код скопирован в буфер обмена';
+tooltip.style.cssText = `
+position: fixed;
+bottom: 20px;
+right: 20px;
+background: var(--primary-color);
+color: white;
+padding: 10px 20px;
+border-radius: var(--border-radius);
+z-index: 1000;
+animation: fadeInOut 2s ease;
+`;
+
+document.body.appendChild(tooltip);
+
+// Копируем текст
+navigator.clipboard.writeText(block.textContent).then(() => {
+setTimeout(() => tooltip.remove(), 2000);
+});
+});
+
+// Меняем курсор при наведении
+block.style.cursor = 'pointer';
+block.title = 'Кликните, чтобы скопировать код';
+});
+});
+
+// Плавная прокрутка для якорных ссылок
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+anchor.addEventListener('click', function(e) {
+e.preventDefault();
+const target = document.querySelector(this.getAttribute('href'));
+if (target) {
+target.scrollIntoView({
+behavior: 'smooth',
+block: 'start'
+});
+}
+});
+});
+</script>
