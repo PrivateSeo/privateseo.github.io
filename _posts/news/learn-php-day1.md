@@ -6,6 +6,7 @@ description: "Полное руководство по установке PHP, �
 date: 2026-01-21
 image: "/assets/images/news/20250722_113027.webp"
 category: php
+news_id: 8c52677794b947c3
 ---
 
 <div class="goal-box">
