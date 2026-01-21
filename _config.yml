@@ -25,6 +25,7 @@ collections:
 plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-redirect-from  # ← Добавьте этот плагин
 # Исключает файлы из обработки Jekyll (они не попадут и в sitemap)
 exclude:
   - "yandex_*.html"
