@@ -21,57 +21,10 @@ collections:
   categories:
     output: true
     permalink: /category/:path/
-  
-  # Добавляем коллекцию для уроков PHP
-  php_lessons:
-    output: true
-    permalink: /learn/php/:title/
-  
-  # Можете также добавить коллекцию для новостей, если используете коллекции
-  news:
-    output: true
-    permalink: /news/:title/
-
-# Для пагинации коллекций используем отдельные настройки
-defaults:
-  - scope:
-      path: ""
-      type: "news"  # если используете коллекцию news
-    values:
-      layout: "news"
-      permalink: /news/:title/
-  
-  - scope:
-      path: ""
-      type: "php_lessons"
-    values:
-      layout: "learn"
-      permalink: /learn/php/:title/
-
-# Настройки пагинации для разных разделов
-pagination:
-  enabled: true
-  
-  # Для главной страницы новостей
-  news:
-    enabled: true
-    collection: 'news'
-    per_page: 6
-    permalink: '/news/page:num/'
-    title: 'Новости - Страница :num'
-  
-  # Для раздела PHP
-  php_lessons:
-    enabled: true
-    collection: 'php_lessons'
-    per_page: 6
-    permalink: '/learn/php/page:num/'
-    title: 'Изучение PHP - Страница :num'
 
 plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
-
 # Исключает файлы из обработки Jekyll (они не попадут и в sitemap)
 exclude:
   - "yandex_*.html"
