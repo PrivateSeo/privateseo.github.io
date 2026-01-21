@@ -1,0 +1,52 @@
+---
+layout: default
+title: PHP обучение
+---
+
+<section class="news-list">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol class="breadcrumbs__list">
+        <li class="breadcrumbs__item">
+          <a href="/" class="breadcrumbs__link">Главная</a>
+        </li>
+        <li class="breadcrumbs__item">
+          <a href="/learn/" class="breadcrumbs__link">Обучение</a>
+        </li>
+        <li class="breadcrumbs__item" aria-current="page">
+          <span class="breadcrumbs__link">PHP</span>
+        </li>
+      </ol>
+    </nav>
+    
+    <h1 class="page-title">PHP обучение</h1>
+    
+    <div class="news-grid">
+      {% assign php_posts = site.posts | where: "category", "php" %}
+      {% for post in php_posts %}
+        <article class="news-card">
+          <a href="{{ post.url }}" class="news-card__link">
+            {% if post.image %}
+              <div class="news-card__image">
+                <img src="{{ post.image }}" alt="{{ post.name }}" loading="lazy">
+              </div>
+            {% endif %}
+            
+            <div class="news-card__content">
+              <div class="news-card__meta">
+                <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%d.%m.%Y" }}</time>
+                <span class="news-card__category">PHP</span>
+              </div>
+              
+              <h2 class="news-card__title">{{ post.name }}</h2>
+              
+              <div class="news-card__excerpt">
+                {{ post.description | truncate: 160 }}
+              </div>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
