@@ -14,7 +14,8 @@ pagination:
       {% if paginator.posts == empty %}
         <p>Новостей пока нет.</p>
       {% else %}
-        {% for post in paginator.posts %}
+        {% assign filtered_posts = paginator.posts | where_exp: "post", "post.category != 'php'" %}
+{% for post in filtered_posts %}
           <article class="news-card">
             <a href="{{ post.url }}" class="news-card__link">
               {% if post.image %}
