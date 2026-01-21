@@ -29,3 +29,7 @@ plugins:
 exclude:
   - "yandex_*.html"
   - "tools/*"
+
+permalink_rewrites:
+  /category/php/: /learn/php/
+  /category/php: /learn/php/
