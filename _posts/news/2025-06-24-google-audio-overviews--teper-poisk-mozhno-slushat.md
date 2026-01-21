@@ -9,7 +9,7 @@ description: Google запустил экспериментальную функ
   — ИИ может нести чушь.
 date: 2025-06-24
 image: /assets/images/news/20250624_112939.webp
-category: php
+category: seo
 news_id: 7df0ef7cf7524fae
 ---
 
