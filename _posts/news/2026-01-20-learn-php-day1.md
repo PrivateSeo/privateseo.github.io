@@ -4,7 +4,7 @@ name: "День 1: Установка PHP и первый скрипт"
 title: "PHP обучение с нуля: День 1 - Установка и Hello World"
 description: "Полное руководство по установке PHP, настройке локального сервера и созданию первой программы. Урок для начинающих."
 date: 2026-01-20
-image: "/images/learn-php/learn-php01.webp"
+image: "/images/learn-php/learn-php02.webp"
 category: php
 news_id: 8c52677794b947c3
 ---
