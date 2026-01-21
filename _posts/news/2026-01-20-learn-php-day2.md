@@ -665,3 +665,315 @@ echo "\\nПравильная цена: $final_price"; // Выводит: 900.0
 </div>
 </div>
 </section>
+
+<style>
+/* Дополнительные стили для урока */
+.data-types-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 2rem;
+margin: 2rem 0;
+}
+
+.data-type {
+background: white;
+border-radius: var(--border-radius);
+padding: 2rem;
+border-top: 4px solid;
+box-shadow: var(--box-shadow);
+transition: var(--transition);
+}
+
+.data-type:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.data-type.int { border-top-color: #3498db; }
+.data-type.float { border-top-color: #9b59b6; }
+.data-type.string { border-top-color: #2ecc71; }
+.data-type.bool { border-top-color: #e74c3c; }
+.data-type.null { border-top-color: #95a5a6; }
+
+.data-type h4 {
+color: var(--dark-color);
+margin-bottom: 1rem;
+font-size: 1.8rem;
+}
+
+.data-type p {
+font-size: 1.4rem;
+line-height: 1.5;
+margin-bottom: 1rem;
+}
+
+.data-type pre {
+background: var(--light-color);
+color: var(--dark-color);
+font-size: 1.2rem;
+margin: 1rem 0;
+border: 1px solid var(--gray-light);
+}
+
+.example-grid {
+display: grid;
+gap: 1.5rem;
+margin: 1.5rem 0;
+}
+
+.correct-example {
+background: rgba(46, 204, 113, 0.1);
+border: 1px solid #2ecc71;
+padding: 1.5rem;
+border-radius: var(--border-radius);
+}
+
+.incorrect-example {
+background: rgba(231, 76, 60, 0.1);
+border: 1px solid #e74c3c;
+padding: 1.5rem;
+border-radius: var(--border-radius);
+}
+
+.correct-example pre,
+.incorrect-example pre {
+background: transparent;
+border: none;
+margin: 0;
+padding: 0;
+}
+
+.interactive-demo {
+background: linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(114, 9, 183, 0.05) 100%);
+border-radius: var(--border-radius);
+padding: 2rem;
+margin: 2rem 0;
+border: 1px solid var(--gray-light);
+}
+
+.interactive-demo button {
+margin-top: 1rem;
+}
+
+.task h3 {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.task h3 .icon {
+font-size: 1.5em;
+}
+
+.practice .task {
+position: relative;
+}
+
+.practice .task::before {
+content: '';
+position: absolute;
+left: -10px;
+top: 0;
+bottom: 0;
+width: 3px;
+background: var(--primary-color);
+border-radius: 3px;
+}
+
+/* Анимации */
+@keyframes highlight {
+0% { background-color: rgba(67, 97, 238, 0.1); }
+100% { background-color: transparent; }
+}
+
+.highlight {
+animation: highlight 2s ease;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+.data-types-grid {
+grid-template-columns: 1fr;
+}
+
+.data-type {
+padding: 1.5rem;
+}
+
+.comparison-table {
+font-size: 1.4rem;
+}
+
+.correct-example,
+.incorrect-example {
+padding: 1rem;
+}
+
+.task::before {
+display: none;
+}
+}
+
+/* Стили для демо отладки */
+.debug-step {
+padding: 1rem;
+margin: 0.5rem 0;
+background: var(--light-color);
+border-radius: var(--border-radius);
+border-left: 3px solid var(--primary-color);
+}
+
+.debug-step.success {
+border-left-color: #2ecc71;
+}
+
+.debug-step.error {
+border-left-color: #e74c3c;
+}
+
+.code-comparison {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 2rem;
+margin: 2rem 0;
+}
+
+.bad-code, .good-code {
+padding: 1.5rem;
+border-radius: var(--border-radius);
+}
+
+.bad-code {
+background: rgba(231, 76, 60, 0.1);
+border: 1px solid #e74c3c;
+}
+
+.good-code {
+background: rgba(46, 204, 113, 0.1);
+border: 1px solid #2ecc71;
+}
+
+@media (max-width: 768px) {
+.code-comparison {
+grid-template-columns: 1fr;
+}
+}
+</style>
+
+<script>
+function toggleAnswers() {
+const answers = document.getElementById('answers');
+const button = event.target;
+
+if (answers.style.display === 'none') {
+answers.style.display = 'block';
+button.textContent = 'Скрыть ответы';
+} else {
+answers.style.display = 'none';
+button.textContent = 'Показать ответы';
+}
+}
+
+// Анимация для карточек типов данных
+document.addEventListener('DOMContentLoaded', function() {
+const dataTypes = document.querySelectorAll('.data-type');
+
+dataTypes.forEach((type, index) => {
+type.style.animationDelay = `${index * 0.1}s`;
+type.classList.add('highlight');
+});
+
+// Подсветка кода при клике
+const codeBlocks = document.querySelectorAll('pre code');
+
+codeBlocks.forEach(block => {
+block.addEventListener('click', function() {
+const range = document.createRange();
+range.selectNodeContents(this);
+const selection = window.getSelection();
+selection.removeAllRanges();
+selection.addRange(range);
+
+// Копируем в буфер обмена
+navigator.clipboard.writeText(block.textContent).then(() => {
+// Визуальный фидбэк
+const originalColor = block.style.backgroundColor;
+block.style.backgroundColor = 'rgba(67, 97, 238, 0.2)';
+
+setTimeout(() => {
+	block.style.backgroundColor = originalColor;
+}, 500);
+});
+});
+
+// Добавляем подсказку
+block.title = 'Кликните для копирования кода';
+block.style.cursor = 'pointer';
+block.style.position = 'relative';
+
+// Добавляем иконку копирования
+const copyIcon = document.createElement('span');
+copyIcon.textContent = '📋';
+copyIcon.style.position = 'absolute';
+copyIcon.style.right = '10px';
+copyIcon.style.top = '10px';
+copyIcon.style.fontSize = '12px';
+copyIcon.style.opacity = '0.5';
+copyIcon.style.transition = 'opacity 0.3s';
+
+block.parentElement.style.position = 'relative';
+block.parentElement.appendChild(copyIcon);
+
+block.addEventListener('mouseenter', () => {
+copyIcon.style.opacity = '1';
+});
+
+block.addEventListener('mouseleave', () => {
+copyIcon.style.opacity = '0.5';
+});
+});
+});
+
+// Плавная прокрутка
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+anchor.addEventListener('click', function(e) {
+e.preventDefault();
+const target = document.querySelector(this.getAttribute('href'));
+if (target) {
+target.scrollIntoView({
+behavior: 'smooth',
+block: 'start'
+});
+}
+});
+});
+
+// Интерактивное демо типов
+function showTypeExample(type) {
+const examples = {
+int: `// Практическое использование целых чисел
+$user_id = 15487;        // ID пользователя в базе данных
+$page_number = 5;        // Текущая страница в пагинации
+$items_per_page = 20;    // Количество товаров на странице
+$total_pages = 15;       // Всего страниц
+
+// Расчет отображения
+$start_item = ($page_number - 1) * $items_per_page + 1;
+$end_item = min($page_number * $items_per_page, $total_items);
+
+echo "Показаны товары $start_item - $end_item из $total_items";`,
+
+string: `// Практическое использование строк
+$username = "john_doe";          // Логин пользователя
+$email = "john@example.com";     // Email для регистрации
+$password_hash = "a1b2c3...";    // Хэш пароля
+$user_agent = $_SERVER['HTTP_USER_AGENT']; // Браузер пользователя
+
+// Формирование приветствия
+$welcome_message = "Добро пожаловать, $username!";
+$email_subject = "Подтверждение регистрации для $username";`
+};
+
+alert(examples[type] || 'Пример не найден');
+}
+</script>
