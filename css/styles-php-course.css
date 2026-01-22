@@ -1,6 +1,6 @@
 /* styles-php-course.css */
 /* Стили для курса PHP (День 1 и День 2) */
-/* Версия 1.0 - 2026 */
+/* Версия 1.1 - Исправлены стили ресурсов */
 
 /* ===== БАЗОВЫЕ СТИЛИ ДЛЯ УРОКОВ ===== */
 /* Иконки в заголовках */
@@ -282,40 +282,61 @@
     line-height: 1.6;
 }
 
-/* ===== РЕСУРСЫ ===== */
+/* ===== РЕСУРСЫ (Стили из первого дня) ===== */
+.resources {
+    background: linear-gradient(135deg, #f4ecf7 0%, #e8daef 100%);
+    border: 1px solid #e8daef;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.resources .section-title {
+    color: var(--dark-color);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
 .resource-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
+    gap: 15px;
+    margin: 20px 0;
 }
 
 .resource-item {
     background: white;
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--gray-light);
-    transition: var(--transition);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
 }
 
 .resource-item:hover {
+    background: #e3f2fd;
     border-color: var(--primary-color);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .resource-item a {
-    color: var(--dark-color);
-    font-weight: 600;
-    font-size: 1.6rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
     display: block;
-    margin-bottom: 0.5rem;
+    padding: 8px 0;
+    font-size: 1.6rem;
+}
+
+.resource-item a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
 }
 
 .resource-item p {
     color: var(--gray-dark);
     font-size: 1.4rem;
     margin: 0;
+    padding: 0;
 }
 
 /* ===== СТИЛИ ДЛЯ КОДА ===== */
@@ -395,7 +416,8 @@ pre:hover::after {
     .practice .task,
     .homework,
     .quiz,
-    .goal-box {
+    .goal-box,
+    .resources {
         padding: 2rem;
     }
 }
@@ -405,7 +427,8 @@ pre:hover::after {
     .practice .task,
     .homework,
     .quiz,
-    .goal-box {
+    .goal-box,
+    .resources {
         padding: 1.5rem;
     }
     
@@ -431,6 +454,10 @@ pre:hover::after {
         font-size: 1.2rem;
         padding: 1rem;
     }
+    
+    .resource-item {
+        padding: 1.2rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -454,6 +481,10 @@ pre:hover::after {
     .correct-example,
     .incorrect-example {
         padding: 1rem;
+    }
+    
+    .resource-item a {
+        font-size: 1.5rem;
     }
 }
 
