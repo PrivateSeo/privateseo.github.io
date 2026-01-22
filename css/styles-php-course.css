@@ -1,0 +1,510 @@
+/* styles-php-course.css */
+/* Стили для курса PHP (День 1 и День 2) */
+/* Версия 1.0 - 2026 */
+
+/* ===== БАЗОВЫЕ СТИЛИ ДЛЯ УРОКОВ ===== */
+/* Иконки в заголовках */
+.icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+/* Goal Box */
+.goal-box {
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(114, 9, 183, 0.1) 100%);
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    margin: 3rem 0;
+    border-left: 4px solid var(--primary-color);
+}
+
+.goal-title {
+    color: var(--dark-color);
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.goal-box p {
+    font-size: 1.6rem;
+    color: var(--gray-dark);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Карточки теории и практики */
+.theory .card,
+.practice .task {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--gray-light);
+    transition: var(--transition);
+    position: relative;
+}
+
+.theory .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+/* Заголовки в карточках */
+.task h3,
+.card h3 {
+    color: var(--dark-color);
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.task h3 .icon {
+    font-size: 1.5em;
+}
+
+/* Key Points */
+.key-points {
+    background: rgba(67, 97, 238, 0.05);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.key-points h4 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+}
+
+.key-points h5 {
+    color: var(--dark-color);
+    margin: 1rem 0 0.5rem;
+    font-size: 1.4rem;
+}
+
+.key-points ul,
+.key-points ol {
+    padding-left: 2rem;
+}
+
+.key-points li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+/* Примечания и предупреждения */
+.note {
+    background: #fff8e1;
+    border-left: 4px solid #ffb300;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.note strong {
+    color: #d35400;
+}
+
+.warning {
+    background: #ffebee;
+    border-left: 4px solid #e53935;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.warning strong {
+    color: #c62828;
+}
+
+/* Simple Example */
+.simple-example {
+    background: rgba(67, 97, 238, 0.05);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+/* ===== СТИЛИ ДЛЯ ТИПОВ ДАННЫХ (День 2) ===== */
+.simple-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.type-box {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border: 2px solid var(--gray-light);
+    transition: var(--transition);
+}
+
+.type-box:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.type-box h4 {
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.type-box p {
+    font-size: 1.4rem;
+    color: var(--gray-dark);
+    margin-bottom: 0.5rem;
+}
+
+.type-box pre {
+    background: var(--light-color);
+    padding: 1rem;
+    margin: 0.5rem 0;
+    font-size: 1.2rem;
+}
+
+/* ===== УСТАНОВКА И РЕДАКТОРЫ (День 1) ===== */
+.installation-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.option {
+    background: var(--light-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--gray-light);
+    transition: var(--transition);
+}
+
+.option:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.option h4 {
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.option .button {
+    margin-top: 1.5rem;
+}
+
+/* ===== ПРИМЕРЫ КОДА ===== */
+.example-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.correct-example {
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid #2ecc71;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+}
+
+.incorrect-example {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid #e74c3c;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+}
+
+.correct-example pre,
+.incorrect-example pre {
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== ЭКСПЕРИМЕНТЫ (День 2) ===== */
+.experiment {
+    background: #fff8e1;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-left: 4px solid #ffb300;
+}
+
+.experiment h4 {
+    color: #d35400;
+    margin-bottom: 1rem;
+}
+
+/* ===== ИНФО-БЛОКИ В ПРАКТИКЕ ===== */
+.info {
+    background: #f0f8ff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-left: 4px solid #3498db;
+}
+
+/* ===== ДОМАШНЕЕ ЗАДАНИЕ ===== */
+.homework,
+.quiz {
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    margin-top: 2rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.homework h3,
+.quiz h3 {
+    color: var(--dark-color);
+    margin-bottom: 1.5rem;
+}
+
+.homework ol,
+.quiz ol {
+    padding-left: 2rem;
+}
+
+.homework li,
+.quiz li {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+/* ===== РЕСУРСЫ ===== */
+.resource-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.resource-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-light);
+    transition: var(--transition);
+}
+
+.resource-item:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.resource-item a {
+    color: var(--dark-color);
+    font-weight: 600;
+    font-size: 1.6rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.resource-item p {
+    color: var(--gray-dark);
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+/* ===== СТИЛИ ДЛЯ КОДА ===== */
+pre {
+    background: #2d3436;
+    color: #dfe6e9;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    margin: 1rem 0;
+    border: 1px solid #444;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+pre:hover {
+    background: #343a40;
+}
+
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+code {
+    background: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 1.4rem;
+}
+
+/* Иконка копирования для pre */
+pre::after {
+    content: '📋';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+pre:hover::after {
+    opacity: 1;
+}
+
+/* ===== АНИМАЦИИ ===== */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.type-box:hover {
+    animation: pulse 0.5s ease;
+}
+
+@keyframes highlight {
+    0% { background-color: rgba(67, 97, 238, 0.1); }
+    100% { background-color: transparent; }
+}
+
+.highlight {
+    animation: highlight 2s ease;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 992px) {
+    .theory .card,
+    .practice .task,
+    .homework,
+    .quiz,
+    .goal-box {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .theory .card,
+    .practice .task,
+    .homework,
+    .quiz,
+    .goal-box {
+        padding: 1.5rem;
+    }
+    
+    .installation-options,
+    .simple-types,
+    .resource-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .type-box {
+        padding: 1rem;
+    }
+    
+    .info {
+        padding: 1rem;
+    }
+    
+    .practice .task::before {
+        display: none;
+    }
+    
+    pre {
+        font-size: 1.2rem;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .goal-title {
+        font-size: 1.8rem;
+    }
+    
+    .task h3,
+    .card h3 {
+        font-size: 1.8rem;
+    }
+    
+    pre {
+        font-size: 1.1rem;
+    }
+    
+    .comparison-table {
+        font-size: 1.4rem;
+    }
+    
+    .correct-example,
+    .incorrect-example {
+        padding: 1rem;
+    }
+}
+
+/* ===== УТИЛИТЫ ===== */
+.text-center {
+    text-align: center;
+}
+
+/* Скрытый контент (для ответов на вопросы) */
+.hidden-answers {
+    display: none;
+}
+
+/* Кнопки */
+.button {
+    display: inline-block;
+    padding: 1.2rem 2.4rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    font-size: 1.6rem;
+}
+
+.button--primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.button--primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow);
+}
+
+/* Линия слева от заданий в практике */
+.practice .task::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+/* Специфичные стили для сравнений */
+.comparison-table.table--small th,
+.comparison-table.table--small td {
+    padding: 1rem;
+}
