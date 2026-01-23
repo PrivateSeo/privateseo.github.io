@@ -8,7 +8,6 @@ image: "/assets/images/news/6f00b46434c034e68ae8e435980c9ea5.jpg"
 category: php
 news_id: 9d6akk880j6tefd5
 ---
-
 <div class="goal-box">
 <h2 class="goal-title">🎯 Цель урока</h2>
 <p>Понять преимущества шаблонизаторов, научиться устанавливать Twig через Composer, освоить базовый синтаксис Twig и интегрировать его в наш MVC-блог для создания более безопасных и удобных шаблонов.</p>
@@ -61,17 +60,17 @@ news_id: 9d6akk880j6tefd5
 <tr>
 <td><strong>Цикл по массиву</strong></td>
 <td><code>&lt;?php foreach($posts as $post): ?&gt;...&lt;?php endforeach; ?&gt;</code></td>
-<td><code>{% for post in posts %}...{% endfor %}</code></td>
+<td>{% raw %}<code>{% for post in posts %}...{% endfor %}</code>{% endraw %}</td>
 </tr>
 <tr>
 <td><strong>Условие</strong></td>
 <td><code>&lt;?php if($user): ?&gt;...&lt;?php endif; ?&gt;</code></td>
-<td><code>{% if user %}...{% endif %}</code></td>
+<td>{% raw %}<code>{% if user %}...{% endif %}</code>{% endraw %}</td>
 </tr>
 <tr>
 <td><strong>Наследование шаблона</strong></td>
 <td>Сложно, через include/require</td>
-<td><code>{% extends 'base.html.twig' %}</code></td>
+<td>{% raw %}<code>{% extends 'base.html.twig' %}</code>{% endraw %}</td>
 </tr>
 <tr>
 <td><strong>Безопасность</strong></td>
@@ -87,7 +86,7 @@ news_id: 9d6akk880j6tefd5
 <ul>
 <li><strong>Автоматическое экранирование</strong> — защита от XSS по умолчанию</li>
 <li><strong>Наследование шаблонов</strong> — мощная система наследования с блоками</li>
-<li><strong>Фильтры и функции</strong> — <code>{{ post.title|upper }}</code>, <code>{{ path('route_name') }}</code></li>
+<li><strong>Фильтры и функции</strong> — {% raw %}<code>{{ post.title|upper }}</code>{% endraw %}, {% raw %}<code>{{ path('route_name') }}</code>{% endraw %}</li>
 <li><strong>Кэширование</strong> — шаблоны компилируются в PHP-код один раз</li>
 <li><strong>Расширяемость</strong> — можно создавать свои фильтры, функции, теги</li>
 <li><strong>Безопасная среда</strong> — в шаблонах нельзя выполнять произвольный PHP-код</li>
@@ -130,11 +129,14 @@ news_id: 9d6akk880j6tefd5
 
 <div class="key-points">
 <h4>1. Вывод переменных (экранированный):</h4>
+{% raw %}
 <pre><code>{{ variable }}          {# Безопасный вывод с экранированием #}
 {{ variable|raw }}      {# Без экранирования (осторожно!) #}
 {{ variable|default('Нет данных') }} {# Значение по умолчанию #}</code></pre>
+{% endraw %}
 
 <h4>2. Управляющие конструкции:</h4>
+{% raw %}
 <pre><code>{# Условия #}
 {% if user.isAdmin %}
     Панель администратора
@@ -148,17 +150,21 @@ news_id: 9d6akk880j6tefd5
 {% for post in posts %}
     {{ loop.index }}. {{ post.title }}
 {% else %}
-    <p>Статей пока нет</p>
+    &lt;p&gt;Статей пока нет&lt;/p&gt;
 {% endfor %}</code></pre>
+{% endraw %}
 
 <h4>3. Фильтры (модификаторы):</h4>
+{% raw %}
 <pre><code>{{ title|upper }}                 {# В верхний регистр #}
 {{ content|truncate(100) }}       {# Обрезать до 100 символов #}
 {{ date|date('d.m.Y H:i') }}      {# Форматирование даты #}
 {{ text|escape('html') }}         {# Явное экранирование #}
 {{ array|join(', ') }}            {# Объединить массив в строку #}</code></pre>
+{% endraw %}
 
 <h4>4. Наследование шаблонов:</h4>
+{% raw %}
 <pre><code>{# base.html.twig #}
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -178,6 +184,7 @@ news_id: 9d6akk880j6tefd5
 {% block content %}
     Содержимое страницы
 {% endblock %}</code></pre>
+{% endraw %}
 </div>
 </div>
 </section>
@@ -321,7 +328,7 @@ class HomeController
             'posts' => [
                 ['id' => 1, 'title' => 'Первая статья на Twig', 'content' => 'Содержание первой статьи...', 'created_at' => '2026-01-01'],
                 ['id' => 2, 'title' => 'Вторая статья', 'content' => 'Содержание второй статьи...', 'created_at' => '2026-01-02'],
-                ['id' => 3, 'title' => 'Статья с <script>тегом</script>', 'content' => 'Проверка безопасности Twig', 'created_at' => '2026-01-03'],
+                ['id' => 3, 'title' => 'Статья с &lt;script&gt;тегом&lt;/script&gt;', 'content' => 'Проверка безопасности Twig', 'created_at' => '2026-01-03'],
             ],
         ];
         
@@ -368,6 +375,7 @@ class HomeController
 <h3><span class="icon">✅</span> Шаг 4: Создаем базовый шаблон Twig</h3>
 
 <p>Создайте <code>app/views/twig/layout/base.html.twig</code>:</p>
+{% raw %}
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="ru"&gt;
 &lt;head&gt;
@@ -428,12 +436,14 @@ class HomeController
     {% block scripts %}{% endblock %}
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
+{% endraw %}
 </div>
 
 <div class="task">
 <h3><span class="icon">✅</span> Шаг 5: Создаем Twig-шаблоны страниц</h3>
 
 <p>1. Создайте <code>app/views/twig/home.html.twig</code>:</p>
+{% raw %}
 <pre><code>{# Наследуем базовый шаблон #}
 {% extends 'layout/base.html.twig' %}
 
@@ -475,8 +485,10 @@ class HomeController
         console.log('Главная страница загружена');
     &lt;/script&gt;
 {% endblock %}</code></pre>
+{% endraw %}
 
 <p>2. Создайте <code>app/views/twig/about.html.twig</code>:</p>
+{% raw %}
 <pre><code>{% extends 'layout/base.html.twig' %}
 
 {% block title %}{{ title }} | {{ parent() }}{% endblock %}
@@ -522,8 +534,10 @@ class HomeController
         &lt;/tr&gt;
     &lt;/table&gt;
 {% endblock %}</code></pre>
+{% endraw %}
 
 <p>3. Создайте <code>app/views/twig/errors/404.html.twig</code>:</p>
+{% raw %}
 <pre><code>{# Этот шаблон НЕ наследует базовый, у него свой дизайн #}
 &lt;!DOCTYPE html&gt;
 &lt;html lang="ru"&gt;
@@ -573,6 +587,7 @@ class HomeController
     &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
+{% endraw %}
 </div>
 
 <div class="task">
@@ -620,12 +635,13 @@ $twig->addFilter(new \Twig\TwigFilter('russian_date', function($date) {
     return date('d', $timestamp) . ' ' . $months[date('n', $timestamp)] . ' ' . date('Y', $timestamp);
 }));</code></pre>
 </li>
-<li>В шаблоне используйте: <code>{{ post.created_at|russian_date }}</code></li>
+<li>В шаблоне используйте: {% raw %}<code>{{ post.created_at|russian_date }}</code>{% endraw %}</li>
 </ol>
 
 <h4>Эксперимент 2: Создайте макрос (функцию) для отображения статьи</h4>
 <ol>
 <li>Создайте <code>app/views/twig/macros/post.html.twig</code>:
+{% raw %}
 <pre><code>{# Макрос для отображения статьи #}
 {% macro display(post) %}
     &lt;div class="post"&gt;
@@ -634,16 +650,20 @@ $twig->addFilter(new \Twig\TwigFilter('russian_date', function($date) {
         &lt;a href="{{ url('post', {'id': post.id}) }}"&gt;Читать далее&lt;/a&gt;
     &lt;/div&gt;
 {% endmacro %}</code></pre>
+{% endraw %}
 </li>
 <li>В основном шаблоне импортируйте и используйте:
+{% raw %}
 <pre><code>{% import 'macros/post.html.twig' as post_macro %}
 
 {{ post_macro.display(current_post) }}</code></pre>
+{% endraw %}
 </li>
 </ol>
 
 <h4>Эксперимент 3: Добавьте кэширование фрагментов</h4>
 <p>В шаблоне используйте тег cache:</p>
+{% raw %}
 <pre><code>{% cache 'sidebar' 600 %} {# Кэшировать на 10 минут #}
     &lt;div class="sidebar"&gt;
         &lt;h3&gt;Популярные статьи&lt;/h3&gt;
@@ -652,6 +672,7 @@ $twig->addFilter(new \Twig\TwigFilter('russian_date', function($date) {
         {% endfor %}
     &lt;/div&gt;
 {% endcache %}</code></pre>
+{% endraw %}
 </div>
 </div>
 </section>
@@ -680,7 +701,7 @@ $twig->addFilter(new \Twig\TwigFilter('highlight_php', function($code) {
 }));
 
 // В шаблоне
-&lt;pre&gt;{{ 'echo "Hello World!";'|highlight_php|raw }}&lt;/pre&gt;</code></pre>
+{% raw %}&lt;pre&gt;{{ 'echo "Hello World!";'|highlight_php|raw }}&lt;/pre&gt;{% endraw %}</code></pre>
 </li>
 <li><strong>Бонус:</strong> Реализуйте наследование шаблонов второго уровня:
 <ul>
@@ -707,7 +728,7 @@ $twig->addFilter(new \Twig\TwigFilter('highlight_php', function($code) {
 <li>Как работает наследование шаблонов в Twig?</li>
 <li>Зачем нужен Composer и что такое автозагрузка классов?</li>
 <li>Как добавить глобальную переменную, доступную во всех шаблонах?</li>
-<li>В чем разница между <code>{{ variable }}</code> и <code>{{ variable|raw }}</code>?</li>
+<li>В чем разница между {% raw %}<code>{{ variable }}</code>{% endraw %} и {% raw %}<code>{{ variable|raw }}</code>{% endraw %}?</li>
 <li>Как закэшировать фрагмент шаблона в Twig?</li>
 </ol>
 
@@ -719,11 +740,11 @@ $twig->addFilter(new \Twig\TwigFilter('highlight_php', function($code) {
 <li>Автоматическое экранирование, наследование шаблонов, читаемый синтаксис, фильтры, кэширование, безопасная среда выполнения.</li>
 <li>Все переменные автоматически экранируются при выводе (htmlspecialchars). Для вывода без экранирования нужно явно использовать фильтр |raw.</li>
 <li>Фильтры преобразуют данные: |upper (в верхний регистр), |date (форматирование даты), |truncate (обрезание текста), |length (длина массива).</li>
-<li>Шаблон-потомок наследует базовый шаблон с помощью <code>{% extends %}</code> и может переопределять блоки с помощью <code>{% block %}</code>.</li>
+<li>Шаблон-потомок наследует базовый шаблон с помощью {% raw %}<code>{% extends %}</code>{% endraw %} и может переопределять блоки с помощью {% raw %}<code>{% block %}</code>{% endraw %}.</li>
 <li>Composer — менеджер зависимостей. Автозагрузка классов позволяет не писать require_once для каждого класса.</li>
 <li>С помощью метода <code>$twig->addGlobal('имя', значение)</code> в конфигурации.</li>
-<li><code>{{ variable }}</code> — вывод с экранированием, <code>{{ variable|raw }}</code> — вывод без экранирования (опасно для пользовательских данных!).</li>
-<li>С помощью тега <code>{% cache 'имя_кэша' время_в_секундах %}...{% endcache %}</code>.</li>
+<li>{% raw %}<code>{{ variable }}</code>{% endraw %} — вывод с экранированием, {% raw %}<code>{{ variable|raw }}</code>{% endraw %} — вывод без экранирования (опасно для пользовательских данных!).</li>
+<li>С помощью тега {% raw %}<code>{% cache 'имя_кэша' время_в_секундах %}...{% endcache %}</code>{% endraw %}.</li>
 </ol>
 </div>
 </div>
@@ -770,6 +791,7 @@ $twig->addFilter(new \Twig\TwigFilter('highlight_php', function($code) {
 </div>
 </div>
 </section>
+
 
 <script>
 // Функция для создания оглавления
