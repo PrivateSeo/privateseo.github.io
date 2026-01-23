@@ -540,34 +540,200 @@ class Post
 </div>
 </section>
 
-<section class="section resources">
-<h2 class="section-title">🔗 Полезные ресурсы</h2>
+<section class="section tips">
+<h2 class="section-title">💡 Полезные советы по MVC</h2>
 
-<div class="resource-list">
-<div class="resource-item">
-<a href="https://ru.wikipedia.org/wiki/Model-View-Controller" target="_blank">MVC на Википедии</a>
-<p>Теоретическая основа паттерна</p>
+<div class="tips-grid">
+<div class="tip-card">
+<div class="tip-icon">🚀</div>
+<h3>Начинайте с простого</h3>
+<p>Не пытайтесь сразу реализовать идеальный MVC. Ваш "наивный" роутинг — отличный первый шаг. Позже вы замените его на более продвинутый.</p>
 </div>
-<div class="resource-item">
-<a href="https://www.php-fig.org/psr/psr-1/" target="_blank">PSR-1: Basic Coding Standard</a>
-<p>Стандарты кодирования на PHP</p>
+
+<div class="tip-card">
+<div class="tip-icon">🔧</div>
+<h3>Используйте автозагрузку классов</h3>
+<p>Вместо множества require_once используйте автозагрузчик. Добавьте в index.php: <code>spl_autoload_register(function($class) { require_once APP_PATH . '/' . str_replace('\\', '/', $class) . '.php'; });</code></p>
 </div>
-<div class="resource-item">
-<a href="https://refactoring.guru/ru/design-patterns" target="_blank">Рефакторинг Гуру: Паттерны</a>
-<p>Объяснение паттернов с примерами</p>
+
+<div class="tip-card">
+<div class="tip-icon">📁</div>
+<h3>Создайте конфигурационный файл</h3>
+<p>Вынесите настройки базы данных, пути и константы в отдельный файл <code>config.php</code>. Это упростит развертывание на разных серверах.</p>
 </div>
-<div class="resource-item">
-<a href="https://www.youtube.com/watch?v=6kW-b0_1N6A" target="_blank">MVC за 5 минут (видео)</a>
-<p>Визуальное объяснение MVC</p>
+
+<div class="tip-card">
+<div class="tip-icon">🛡️</div>
+<h3>Безопасность входа в приложение</h3>
+<p>Всегда проверяйте входные данные в контроллерах. Используйте <code>htmlspecialchars()</code> для вывода пользовательского контента в шаблонах.</p>
 </div>
-<div class="resource-item">
-<a href="https://github.com/PatrickLouys/no-framework-tutorial" target="_blank">No Framework Tutorial</a>
-<p>Создание MVC без фреймворка (англ.)</p>
+
+<div class="tip-card">
+<div class="tip-icon">🧩</div>
+<h3>Создайте базовый контроллер</h3>
+<p>Вынезите общие методы (render, redirect, проверка авторизации) в <code>BaseController</code>. Все остальные контроллеры будут наследовать от него.</p>
+</div>
+
+<div class="tip-card">
+<div class="tip-icon">🎯</div>
+<h3>Тестируйте компоненты отдельно</h3>
+<p>Модели можно тестировать без контроллеров, контроллеры — без видов. Это главное преимущество MVC для разработки и отладки.</p>
 </div>
 </div>
 </section>
 
+<!-- JavaScript для оглавления будет добавлен в общий скрипт -->
+
 <script>
+// Функция для создания оглавления
+function generateTableOfContents() {
+    const headings = document.querySelectorAll('.section-title, .card h3');
+    const tocList = document.getElementById('toc-list');
+    
+    if (!tocList || headings.length === 0) return;
+    
+    tocList.innerHTML = '';
+    
+    headings.forEach((heading, index) => {
+        // Пропускаем некоторые заголовки если нужно
+        if (heading.textContent.includes('❓') || heading.textContent.includes('✏️')) return;
+        
+        // Создаем ID для заголовка если его нет
+        let headingId = heading.id;
+        if (!headingId) {
+            headingId = 'heading-' + index;
+            heading.id = headingId;
+        }
+        
+        // Определяем уровень вложенности по классам
+        let level = 2;
+        if (heading.classList.contains('section-title')) {
+            level = 1;
+        } else if (heading.closest('.card')) {
+            level = 3;
+        }
+        
+        // Создаем элемент списка
+        const li = document.createElement('li');
+        li.className = `toc-item toc-level-${level}`;
+        
+        const a = document.createElement('a');
+        a.href = `#${headingId}`;
+        a.className = 'toc-link';
+        a.textContent = heading.textContent.replace(/[📚💻💡🎯🛠️✍️🏗️📐🛣️⚙️]/g, '').trim();
+        
+        a.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeTOC();
+            
+            // Плавная прокрутка к заголовку
+            const target = document.getElementById(headingId);
+            if (target) {
+                const headerOffset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+        
+        li.appendChild(a);
+        tocList.appendChild(li);
+    });
+}
+
+// Функции для управления модальным окном
+function openTOC() {
+    const modal = document.getElementById('toc-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeTOC() {
+    const modal = document.getElementById('toc-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Создаем HTML для кнопки и модального окна
+function createTOCElements() {
+    // Кнопка переключения
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'toc-toggle';
+    toggleBtn.id = 'toc-toggle';
+    toggleBtn.innerHTML = '📑';
+    toggleBtn.title = 'Оглавление урока';
+    toggleBtn.addEventListener('click', openTOC);
+    document.body.appendChild(toggleBtn);
+    
+    // Модальное окно
+    const modal = document.createElement('div');
+    modal.className = 'toc-modal';
+    modal.id = 'toc-modal';
+    
+    modal.innerHTML = `
+        <div class="toc-content">
+            <button class="toc-close" id="toc-close">×</button>
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">Оглавление урока</h2>
+            <ul class="toc-list" id="toc-list"></ul>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Закрытие по клику на крестик
+    document.getElementById('toc-close').addEventListener('click', closeTOC);
+    
+    // Закрытие по клику вне контента
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeTOC();
+        }
+    });
+    
+    // Закрытие по Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeTOC();
+        }
+    });
+}
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    // Создаем элементы оглавления
+    createTOCElements();
+    
+    // Генерируем оглавление
+    generateTableOfContents();
+    
+    // Показываем/скрываем кнопку при скролле
+    let lastScrollTop = 0;
+    const tocBtn = document.getElementById('toc-toggle');
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Скрываем кнопку при скролле вниз, показываем при скролле вверх
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            tocBtn.style.opacity = '0.6';
+            tocBtn.style.transform = 'translateY(-10px)';
+        } else {
+            tocBtn.style.opacity = '1';
+            tocBtn.style.transform = 'translateY(0)';
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+});
+
 function toggleAnswers() {
 const answers = document.getElementById('answers');
 const button = event.target;
