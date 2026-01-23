@@ -16,6 +16,9 @@ layout: default
       
       <h1 class="article-title" itemprop="headline">{{ page.name }}</h1>
       
+      {% if page.category == "php" %}
+	  <link rel="stylesheet" href="/css/styles-php-course.css">
+	  {% endif %}
       {% if page.image and page.category != "php" %}
         <div class="article-image" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
           <img src="{{ page.image }}" alt="{{ page.name }}" itemprop="url">

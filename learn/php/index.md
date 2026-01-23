@@ -2,7 +2,7 @@
 layout: default
 title: PHP обучение
 ---
-<link rel="stylesheet" href="/css/styles-php-course.css">
+
 <section class="news-list">
   <div class="container">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
