@@ -4,7 +4,7 @@ name: "День 64: Архитектура MVC и простой роутинг"
 title: "PHP обучение: Веб-разработка. День 64 - Принципы MVC и первый роутинг"
 description: "Изучаем архитектурный шаблон Model-View-Controller (MVC), создаем структуру проекта и реализуем 'наивный' роутинг."
 date: 2026-01-01
-image: "/assets/images/2af1e42092f92ec5a2b305a2498411f5.jpg"
+image: "/assets/images/news/2af1e42092f92ec5a2b305a2498411f5.jpg"
 category: php
 news_id: 8c5267779i5s47c4
 ---
