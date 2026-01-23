@@ -410,6 +410,11 @@ pre:hover::after {
     animation: highlight 2s ease;
 }
 
+.comparison-table {
+
+overflow: scroll;
+}
+
 /* ===== АДАПТИВНОСТЬ ===== */
 @media (max-width: 992px) {
     .theory .card,
