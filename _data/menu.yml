@@ -1,13 +1,13 @@
 items:
 - title: Главная
-  url: https://privseo.ru/#hero
+  url: /#hero
 - title: Обо мне
-  url: https://privseo.ru/#about
+  url: /#about
 - title: Услуги
-  url: https://privseo.ru/#services
+  url: /#services
 - title: Портфолио
-  url: https://privseo.ru/#portfolio
+  url: /#portfolio
 - title: Отзывы
-  url: https://privseo.ru/#reviews
+  url: /#reviews
 - title: Контакты
-  url: https://privseo.ru/#contact
+  url: /#contact
