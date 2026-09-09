@@ -79,7 +79,7 @@
             background: #252f3d;
             border: none;
             border-radius: 3rem;
-            padding: 0.7rem 1.6rem;
+            padding: 0.3rem 0.4rem;
             font-size: 1rem;
             font-weight: 500;
             color: #d6e0ed;
@@ -211,11 +211,6 @@
 </head>
 <body>
 <div class="container" id="appContainer">
-    <h1>
-        🎬 Видео-центр
-        <small id="videoCounter">0</small>
-    </h1>
-
     <!-- Окно плеера -->
     <div class="video-wrapper" id="videoWrapper">
         <iframe id="mainPlayer" 
@@ -238,12 +233,6 @@
         <!-- Кнопки будут сгенерированы скриптом -->
     </div>
 
-    <!-- Блок с подсказкой по вставке -->
-    <div class="howto">
-        <strong>📥 Как добавить видео:</strong><br>
-        Вставьте новый iframe в массив <code>videoList</code> в секции JS (строка 98).<br>
-        Пример: <code>{ src: "https://rutube.ru/play/embed/...", title: "Видео 2" }</code>
-    </div>
 </div>
 
 <script>
