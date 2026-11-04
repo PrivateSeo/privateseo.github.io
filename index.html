@@ -7,6 +7,7 @@
 	<meta name="description" content="Разработка сайтов под ключ, техподдержка и сопровождение, оптимизация скорости и SEO-продвижение. Профессиональный веб-разработчик: договор как ИП, любые CMS, в том числе самописные. Час работы от 2 000 ₽.">
 	<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
 	<link rel="canonical" href="https://privateseo.github.io/">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
 	<meta name="theme-color" content="#0a0e0b">
 	<meta property="og:type" content="website">
 	<meta property="og:locale" content="ru_RU">
@@ -641,10 +642,42 @@
 	$("cx").onclick=close;m.onclick=e=>{if(e.target==m)close()};
 	addEventListener("keydown",e=>{if(e.key=="Escape"){close();tp(false);closeMenu()}if(m.classList.contains("on")||mode!="cases")return;
 	if(e.key=="ArrowLeft")go(i-1);if(e.key=="ArrowRight")go(i+1)});
-	// TODO при переносе на сервер: отправить заявку на почту (fetch на /api/lead -> mail())
-	async function sendLead(d){/* await fetch("/api/lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)}); */return true}
-	f.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));d.name=d.name.trim();d.contact=d.contact.trim();d.task=d.task.trim();
-	await sendLead(d);const v=JSON.stringify(d);ck.set("lead",v);store.set("lead",v);close();f.reset();setMode("lead");show(leadLines(d,false))};
+	const LEAD_URL="https://script.google.com/macros/s/AKfycbxfc7t6RelxmJXMr_tWwWFLbpDQpTZpWqqldZHTcaAZO_W9Ta3999ar8rb5HxhLpbdd/exec";
+	async function sendLead(d){
+		// text/plain — чтобы не было CORS-префлайта; Apps Script парсит JSON из тела
+		const res=await fetch(LEAD_URL,{
+			method:"POST",
+			headers:{"Content-Type":"text/plain;charset=utf-8"},
+			body:JSON.stringify(d),
+			redirect:"follow"
+		});
+		if(!res.ok)throw new Error("HTTP "+res.status);
+		const j=await res.json();
+		if(!j.ok)throw new Error(j.error||"server error");
+		return true;
+	}
+	f.onsubmit=async e=>{
+		e.preventDefault();
+		const d=Object.fromEntries(new FormData(f));
+		d.name=d.name.trim();d.contact=d.contact.trim();d.task=d.task.trim();
+
+		const btn=f.querySelector('button[type="submit"]');
+		const oldTxt=btn.textContent;
+		btn.disabled=true;btn.textContent="Отправка…";
+		try{
+			await sendLead(d);
+			const v=JSON.stringify(d);
+			ck.set("lead",v);store.set("lead",v);
+			close();f.reset();
+			setMode("lead");
+			show(leadLines(d,false));
+		}catch(err){
+			console.error("sendLead:",err);
+			alert("Не удалось отправить заявку. Проверьте соединение и попробуйте ещё раз, либо напишите напрямую: mysite911@ya.ru / Telegram @robDaNilov.");
+		}finally{
+			btn.disabled=false;btn.textContent=oldTxt;
+		}
+	};
 	let lead=null;try{const v=ck.get("lead")||store.get("lead");lead=v?JSON.parse(v):null}catch(e){}
 	if(lead&&typeof lead.task=="string"&&typeof lead.name=="string"&&typeof lead.contact=="string"){setMode("lead");run("lead",leadLines(lead,true))}else intro();
 </script>
